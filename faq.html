@@ -23,10 +23,10 @@
 <span class="k">implicit</span> <span class="k">val</span> <span class="n">tryFoo</span><span class="k">:</span> <span class="kt">Foo</span><span class="o">[</span><span class="kt">Try</span>, <span class="kt">String</span><span class="o">]</span> <span class="k">=</span> <span class="k">new</span> <span class="nc">Foo</span><span class="o">[</span><span class="kt">Try</span>, <span class="kt">String</span><span class="o">]</span> <span class="o">{</span>
   <span class="k">def</span> <span class="n">a</span><span class="o">(</span><span class="n">i</span><span class="k">:</span> <span class="kt">Int</span><span class="o">)</span> <span class="k">=</span> <span class="nc">Try</span><span class="o">(</span><span class="n">i</span><span class="o">.</span><span class="n">toString</span><span class="o">)</span>
 <span class="o">}</span>
-<span class="c1">// tryFoo: Foo[scala.util.Try,String] = $anon$1@2d0e9eb7
+<span class="c1">// tryFoo: Foo[scala.util.Try,String] = $anon$1@2d7e9124
 </span>
 <span class="k">implicit</span> <span class="k">val</span> <span class="n">fk</span><span class="k">:</span> <span class="kt">Try</span> <span class="kt">~&gt;</span> <span class="kt">Option</span> <span class="o">=</span> <span class="n">λ</span><span class="o">[</span><span class="kt">Try</span> <span class="kt">~&gt;</span> <span class="kt">Option</span><span class="o">](</span><span class="k">_</span><span class="o">.</span><span class="n">toOption</span><span class="o">)</span>
-<span class="c1">// fk: scala.util.Try ~&gt; Option = $anon$1@429a46b0
+<span class="c1">// fk: scala.util.Try ~&gt; Option = $anon$1@609f3511
 </span>
 <span class="nc">Foo</span><span class="o">[</span><span class="kt">Option</span>, <span class="kt">String</span><span class="o">].</span><span class="n">a</span><span class="o">(</span><span class="mi">3</span><span class="o">)</span>
 <span class="c1">// res0: Option[String] = Some(3)
@@ -65,7 +65,7 @@ The <code class="highlighter-rouge">FunctorK</code> instance it generates does n
 <p>However, there is also <code class="highlighter-rouge">mapK</code> function added to the companion object of the algebra which gives you more precise type.</p>
 
 <div class="language-scala highlighter-rouge"><pre class="highlight"><code><span class="k">val</span> <span class="n">barOption</span><span class="k">:</span> <span class="kt">Bar</span><span class="o">[</span><span class="kt">Option</span><span class="o">]</span> <span class="o">{</span> <span class="k">type</span> <span class="kt">T</span> <span class="o">=</span> <span class="nc">String</span> <span class="o">}</span> <span class="k">=</span> <span class="nc">Bar</span><span class="o">.</span><span class="n">mapK</span><span class="o">(</span><span class="n">tryInt</span><span class="o">)(</span><span class="n">fk</span><span class="o">)</span>
-<span class="c1">// barOption: Bar[Option]{type T = String} = Bar$$anon$2@7777b16f
+<span class="c1">// barOption: Bar[Option]{type T = String} = Bar$$anon$2@586b8a6d
 </span></code></pre>
 </div>
 

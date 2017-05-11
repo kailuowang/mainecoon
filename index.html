@@ -43,7 +43,7 @@
 
 <p>Similar to [simularcum], <code class="highlighter-rouge">@finalAlg</code> adds an <code class="highlighter-rouge">apply</code> method in the companion object so that you can do implicit calling.</p>
 <div class="language-scala highlighter-rouge"><pre class="highlight"><code><span class="nc">ExpressionAlg</span><span class="o">[</span><span class="kt">Try</span><span class="o">]</span>
-<span class="c1">// res2: ExpressionAlg[scala.util.Try] = tryExpression$@6ab7a940
+<span class="c1">// res2: ExpressionAlg[scala.util.Try] = tryExpression$@4ed73331
 </span></code></pre>
 </div>
 
@@ -55,10 +55,10 @@
 </code></pre>
 </div>
 <div class="language-scala highlighter-rouge"><pre class="highlight"><code><span class="k">implicit</span> <span class="k">val</span> <span class="n">fk</span> <span class="k">:</span> <span class="kt">Try</span> <span class="kt">~&gt;</span> <span class="kt">Option</span> <span class="o">=</span> <span class="n">λ</span><span class="o">[</span><span class="kt">Try</span> <span class="kt">~&gt;</span> <span class="kt">Option</span><span class="o">](</span><span class="k">_</span><span class="o">.</span><span class="n">toOption</span><span class="o">)</span>
-<span class="c1">// fk: scala.util.Try ~&gt; Option = $anon$1@7fa7633a
+<span class="c1">// fk: scala.util.Try ~&gt; Option = $anon$1@5fe1c109
 </span>
 <span class="n">tryExpression</span><span class="o">.</span><span class="n">mapK</span><span class="o">(</span><span class="n">fk</span><span class="o">)</span>
-<span class="c1">// res3: ExpressionAlg[Option] = ExpressionAlg$$anon$4@14dd7f4
+<span class="c1">// res3: ExpressionAlg[Option] = ExpressionAlg$$anon$4@2175805c
 </span></code></pre>
 </div>
 
@@ -66,7 +66,7 @@
 <code class="highlighter-rouge">F ~&gt; G</code>, you automatically have a <code class="highlighter-rouge">ExpressionAlg[G]</code></p>
 
 <div class="language-scala highlighter-rouge"><pre class="highlight"><code><span class="nc">ExpressionAlg</span><span class="o">[</span><span class="kt">Option</span><span class="o">]</span>
-<span class="c1">// res4: ExpressionAlg[Option] = ExpressionAlg$$anon$4@286d2442
+<span class="c1">// res4: ExpressionAlg[Option] = ExpressionAlg$$anon$4@1500ce1b
 </span></code></pre>
 </div>
 
@@ -100,7 +100,7 @@
 <p>Note that the <code class="highlighter-rouge">ExpressionAlg</code> interpreter needed here is a <code class="highlighter-rouge">ExpressionAlg[Option]</code>, while we only defined a <code class="highlighter-rouge">ExpressionAlg[Try]</code>. However since we have a <code class="highlighter-rouge">fk: Try ~&gt; Option</code> in scope, we automatically have <code class="highlighter-rouge">ExpressionAlg[Option]</code> in scope. We can just write</p>
 
 <div class="language-scala highlighter-rouge"><pre class="highlight"><code><span class="k">new</span> <span class="nc">StringCalculatorOption</span>
-<span class="c1">// res5: StringCalculatorOption = StringCalculatorOption@6cc8a0ec
+<span class="c1">// res5: StringCalculatorOption = StringCalculatorOption@3b2092a7
 </span></code></pre>
 </div>
 
@@ -108,7 +108,7 @@
 
 <p>You can use <code class="highlighter-rouge">CartesianK</code> to create a new interpreter that runs two interpreters simultaneously and return the result as a <code class="highlighter-rouge">cats.Prod</code>. The <code class="highlighter-rouge">@autoCartesianK</code> attribute add an instance of <code class="highlighter-rouge">CartesianK</code> to the companion object. Example:</p>
 <div class="language-scala highlighter-rouge"><pre class="highlight"><code><span class="k">val</span> <span class="n">prod</span> <span class="k">=</span> <span class="nc">ExpressionAlg</span><span class="o">[</span><span class="kt">Option</span><span class="o">].</span><span class="n">productK</span><span class="o">(</span><span class="nc">ExpressionAlg</span><span class="o">[</span><span class="kt">Try</span><span class="o">])</span>
-<span class="c1">// prod: ExpressionAlg[[γ$0$]cats.data.Prod[Option,scala.util.Try,γ$0$]] = ExpressionAlg$$anon$2$$anon$3@2c230b6d
+<span class="c1">// prod: ExpressionAlg[[γ$0$]cats.data.Prod[Option,scala.util.Try,γ$0$]] = ExpressionAlg$$anon$2$$anon$3@22d6f652
 </span>
 <span class="n">prod</span><span class="o">.</span><span class="n">num</span><span class="o">(</span><span class="s">"2"</span><span class="o">)</span>
 <span class="c1">// res6: cats.data.Prod[Option,scala.util.Try,Float] = Prod(Some(2.0),Success(2.0))
