@@ -1,0 +1,118 @@
+<html><head><meta charset="utf-8" /><meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" /><title>Mainecoon</title><meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="description" content="A library for transforming and composing final tagless algebras" /><meta name="author" content="Kailuo Wang" /><meta name="og:image" content="/img/poster.png" /><meta name="og:title" content="Mainecoon" /><meta name="og:site_name" content="Mainecoon" /><meta name="og:url" content="https://github.com/kailuowang/mainecoon" /><meta name="og:type" content="website" /><meta name="og:description" content="A library for transforming and composing final tagless algebras" /><meta name="twitter:image" content="/img/poster.png" /><meta name="twitter:card" content="summary_large_image" /><meta name="twitter:site" content="" /><link rel="icon" type="image/png" href="/img/favicon.png" /><link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" /><link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css" /><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.6.0/styles/atom-one-light.min.css" /><link rel="stylesheet" href="/css/style.css" /><link rel="stylesheet" href="/css/palette.css" /><link rel="stylesheet" href="/css/override.css" /></head><body><header id="site-header"><div class="navbar-wrapper"><div class="container"><div class="row"><div class="col-xs-6"><a href="/" class="brand"><div class="icon-wrapper" style="background:url('/img/navbar_brand.png') no-repeat"><span>Mainecoon</span></div></a></div><div class="col-xs-6"><nav class="text-right"><ul class=""><li><a href="https://github.com/kailuowang/mainecoon"><i class="fa fa-github"></i><span class="hidden-xs">GitHub</span></a></li></ul></nav></div></div></div></div><div class="jumbotron" style="background-image:url('/img/jumbotron_pattern.png')"><div class="container"><h1 class="text-center">A library for transforming and composing final tagless algebras</h1><h2></h2><p class="text-center"><a href="https://github.com/kailuowang/mainecoon" class="btn btn-outline-inverse">View on GitHub</a></p></div></div><div><ul class="horizontalNav">     <li><a class=" active " href="/">Home</a></li>  <li><a class="" href="/faq.html">FAQ</a></li>  <li><a class="" href="/typeclasses.html">Type classes</a></li> </ul></div></header><main id="site-main"><section class="use"><div class="container"><div id="content"><p>Mainecoon is a small library built to facilitate composing tagless final encoded algebras.</p>
+
+<h2 id="installation">Installation</h2>
+
+<p>Mainecoon is developed using <a href="http://scalameta.org/">scalameta</a>, so there are a few dependencies to add in your <code class="highlighter-rouge">build.sbt</code>.</p>
+
+<div class="language-scala highlighter-rouge"><pre class="highlight"><code><span class="n">resolvers</span> <span class="o">+=</span> <span class="nc">Resolver</span><span class="o">.</span><span class="n">bintrayRepo</span><span class="o">(</span><span class="s">"kailuowang"</span><span class="o">,</span> <span class="s">"maven"</span><span class="o">)</span>
+
+<span class="n">addCompilerPlugin</span><span class="o">(</span>
+  <span class="o">(</span><span class="s">"org.scalameta"</span> <span class="o">%</span> <span class="s">"paradise"</span> <span class="o">%</span> <span class="s">"3.0.0-M8"</span><span class="o">).</span><span class="n">cross</span><span class="o">(</span><span class="nc">CrossVersion</span><span class="o">.</span><span class="n">full</span><span class="o">)</span>
+<span class="o">)</span>
+
+<span class="n">libraryDependencies</span> <span class="o">++=</span> <span class="nc">Seq</span><span class="o">(</span>
+  <span class="s">"org.scalameta"</span> <span class="o">%%</span> <span class="s">"scalameta"</span> <span class="o">%</span> <span class="s">"1.7.0"</span> <span class="o">%</span> <span class="nc">Provided</span><span class="o">,</span>
+  <span class="s">"com.kailuowang"</span> <span class="o">%%</span> <span class="s">"mainecoon-macros"</span> <span class="o">%</span> <span class="s">"0.0.3"</span>
+<span class="o">)</span>
+</code></pre>
+</div>
+
+<h2 id="transforming-interpreters">Transforming Interpreters</h2>
+
+<p>Say we have a typical tagless encoded algebra <code class="highlighter-rouge">ExpressionAlg[F[_]]</code></p>
+
+<div class="language-scala highlighter-rouge"><pre class="highlight"><code><span class="k">import</span> <span class="nn">mainecoon._</span>
+
+<span class="nd">@finalAlg</span> <span class="nd">@autoFunctorK</span> <span class="nd">@autoCartesianK</span>
+<span class="k">trait</span> <span class="nc">ExpressionAlg</span><span class="o">[</span><span class="kt">F</span><span class="o">[</span><span class="k">_</span><span class="o">]]</span> <span class="o">{</span>
+  <span class="k">def</span> <span class="n">num</span><span class="o">(</span><span class="n">i</span><span class="k">:</span> <span class="kt">String</span><span class="o">)</span><span class="k">:</span> <span class="kt">F</span><span class="o">[</span><span class="kt">Float</span><span class="o">]</span>
+  <span class="k">def</span> <span class="n">divide</span><span class="o">(</span><span class="n">dividend</span><span class="k">:</span> <span class="kt">Float</span><span class="o">,</span> <span class="n">divisor</span><span class="k">:</span> <span class="kt">Float</span><span class="o">)</span><span class="k">:</span> <span class="kt">F</span><span class="o">[</span><span class="kt">Float</span><span class="o">]</span>
+<span class="o">}</span>
+</code></pre>
+</div>
+<p>with an interpreter implemented using <code class="highlighter-rouge">Try</code></p>
+
+<div class="language-scala highlighter-rouge"><pre class="highlight"><code><span class="k">import</span> <span class="nn">util.Try</span>
+
+<span class="k">implicit</span> <span class="k">object</span> <span class="nc">tryExpression</span> <span class="k">extends</span> <span class="nc">ExpressionAlg</span><span class="o">[</span><span class="kt">Try</span><span class="o">]</span> <span class="o">{</span>
+  <span class="k">def</span> <span class="n">num</span><span class="o">(</span><span class="n">i</span><span class="k">:</span> <span class="kt">String</span><span class="o">)</span> <span class="k">=</span> <span class="nc">Try</span><span class="o">(</span><span class="n">i</span><span class="o">.</span><span class="n">toFloat</span><span class="o">)</span>
+  <span class="k">def</span> <span class="n">divide</span><span class="o">(</span><span class="n">dividend</span><span class="k">:</span> <span class="kt">Float</span><span class="o">,</span> <span class="n">divisor</span><span class="k">:</span> <span class="kt">Float</span><span class="o">)</span> <span class="k">=</span> <span class="nc">Try</span><span class="o">(</span><span class="n">dividend</span> <span class="o">/</span> <span class="n">divisor</span><span class="o">)</span>
+<span class="o">}</span>
+</code></pre>
+</div>
+
+<p>Similar to [simularcum], <code class="highlighter-rouge">@finalAlg</code> adds an <code class="highlighter-rouge">apply</code> method in the companion object so that you can do implicit calling.</p>
+<div class="language-scala highlighter-rouge"><pre class="highlight"><code><span class="nc">ExpressionAlg</span><span class="o">[</span><span class="kt">Try</span><span class="o">]</span>
+<span class="c1">// res2: ExpressionAlg[scala.util.Try] = tryExpression$@2e32b276
+</span></code></pre>
+</div>
+
+<p>The <code class="highlighter-rouge">@autoFunctorK</code> annotation adds a <code class="highlighter-rouge">FunctorK</code> instance for <code class="highlighter-rouge">ExpressionAlg</code> so that you can map
+ an <code class="highlighter-rouge">ExpressionAlg[F]</code> to a <code class="highlighter-rouge">ExpressionAlg[G]</code>, if you have a <code class="highlighter-rouge">FunctionK[F, G]</code>, a.k.a. <code class="highlighter-rouge">F ~&gt; G</code>.</p>
+<div class="language-scala highlighter-rouge"><pre class="highlight"><code><span class="k">import</span> <span class="nn">mainecoon.implicits._</span>
+<span class="k">import</span> <span class="nn">cats.implicits._</span>
+<span class="k">import</span> <span class="nn">cats._</span>
+</code></pre>
+</div>
+<div class="language-scala highlighter-rouge"><pre class="highlight"><code><span class="k">implicit</span> <span class="k">val</span> <span class="n">fk</span> <span class="k">:</span> <span class="kt">Try</span> <span class="kt">~&gt;</span> <span class="kt">Option</span> <span class="o">=</span> <span class="n">λ</span><span class="o">[</span><span class="kt">Try</span> <span class="kt">~&gt;</span> <span class="kt">Option</span><span class="o">](</span><span class="k">_</span><span class="o">.</span><span class="n">toOption</span><span class="o">)</span>
+<span class="c1">// fk: scala.util.Try ~&gt; Option = $anon$1@36871927
+</span>
+<span class="n">tryExpression</span><span class="o">.</span><span class="n">mapK</span><span class="o">(</span><span class="n">fk</span><span class="o">)</span>
+<span class="c1">// res3: ExpressionAlg[Option] = ExpressionAlg$$anon$4@48d5a0ea
+</span></code></pre>
+</div>
+
+<p>In fact, <code class="highlighter-rouge">@finalAlg</code> also add an auto derivation, so that if you have an implicit  <code class="highlighter-rouge">ExpressionAlg[F]</code> and an implicit
+<code class="highlighter-rouge">F ~&gt; G</code>, you automatically have a <code class="highlighter-rouge">ExpressionAlg[G]</code></p>
+
+<div class="language-scala highlighter-rouge"><pre class="highlight"><code><span class="nc">ExpressionAlg</span><span class="o">[</span><span class="kt">Option</span><span class="o">]</span>
+<span class="c1">// res4: ExpressionAlg[Option] = ExpressionAlg$$anon$4@53abf78b
+</span></code></pre>
+</div>
+
+<h2 id="vertical-composition">Vertical composition</h2>
+
+<p>Say you have another algebra that could use the <code class="highlighter-rouge">ExpressionAlg</code>.</p>
+
+<div class="language-scala highlighter-rouge"><pre class="highlight"><code><span class="k">trait</span> <span class="nc">StringCalculatorAlg</span><span class="o">[</span><span class="kt">F</span><span class="o">[</span><span class="k">_</span><span class="o">]]</span> <span class="o">{</span>
+  <span class="k">def</span> <span class="n">calc</span><span class="o">(</span><span class="n">i</span><span class="k">:</span> <span class="kt">String</span><span class="o">)</span><span class="k">:</span> <span class="kt">F</span><span class="o">[</span><span class="kt">Float</span><span class="o">]</span>
+<span class="o">}</span>
+</code></pre>
+</div>
+
+<p>When writing interpreter for this one, we can call for an interpreter for <code class="highlighter-rouge">ExpressionAlg</code>.</p>
+
+<div class="language-scala highlighter-rouge"><pre class="highlight"><code><span class="k">class</span> <span class="nc">StringCalculatorOption</span><span class="o">(</span><span class="k">implicit</span> <span class="n">exp</span><span class="k">:</span> <span class="kt">ExpressionAlg</span><span class="o">[</span><span class="kt">Option</span><span class="o">])</span> <span class="k">extends</span> <span class="nc">StringCalculatorAlg</span><span class="o">[</span><span class="kt">Option</span><span class="o">]</span> <span class="o">{</span>
+  <span class="k">def</span> <span class="n">calc</span><span class="o">(</span><span class="n">i</span><span class="k">:</span> <span class="kt">String</span><span class="o">)</span><span class="k">:</span> <span class="kt">Option</span><span class="o">[</span><span class="kt">Float</span><span class="o">]</span> <span class="k">=</span> <span class="o">{</span>
+    <span class="k">val</span> <span class="n">numbers</span> <span class="k">=</span> <span class="n">i</span><span class="o">.</span><span class="n">split</span><span class="o">(</span><span class="s">"/"</span><span class="o">)</span>
+    <span class="k">for</span> <span class="o">{</span>
+      <span class="n">s1</span> <span class="k">&lt;-</span> <span class="n">numbers</span><span class="o">.</span><span class="n">headOption</span>
+      <span class="n">f1</span> <span class="k">&lt;-</span> <span class="n">exp</span><span class="o">.</span><span class="n">num</span><span class="o">(</span><span class="n">s1</span><span class="o">)</span>
+      <span class="n">s2</span> <span class="k">&lt;-</span> <span class="n">numbers</span><span class="o">.</span><span class="n">lift</span><span class="o">(</span><span class="mi">1</span><span class="o">)</span>
+      <span class="n">f2</span> <span class="k">&lt;-</span> <span class="n">exp</span><span class="o">.</span><span class="n">num</span><span class="o">(</span><span class="n">s2</span><span class="o">)</span>
+      <span class="n">r</span> <span class="k">&lt;-</span> <span class="n">exp</span><span class="o">.</span><span class="n">divide</span><span class="o">(</span><span class="n">f1</span><span class="o">,</span> <span class="n">f2</span><span class="o">)</span>
+    <span class="o">}</span> <span class="k">yield</span> <span class="n">r</span>
+  <span class="o">}</span>
+<span class="o">}</span>
+</code></pre>
+</div>
+
+<p>Note that the <code class="highlighter-rouge">ExpressionAlg</code> interpreter needed here is a <code class="highlighter-rouge">ExpressionAlg[Option]</code>, while we only defined a <code class="highlighter-rouge">ExpressionAlg[Try]</code>. However since we have a <code class="highlighter-rouge">fk: Try ~&gt; Option</code> in scope, we automatically have <code class="highlighter-rouge">ExpressionAlg[Option]</code> in scope. We can just write</p>
+
+<div class="language-scala highlighter-rouge"><pre class="highlight"><code><span class="k">new</span> <span class="nc">StringCalculatorOption</span>
+<span class="c1">// res5: StringCalculatorOption = StringCalculatorOption@71356881
+</span></code></pre>
+</div>
+
+<h2 id="horizontal-composition">Horizontal composition</h2>
+
+<p>You can use <code class="highlighter-rouge">CartesianK</code> to create a new interpreter that runs two interpreters simultaneously and return the result as a <code class="highlighter-rouge">cats.Prod</code>. The <code class="highlighter-rouge">@autoCartesianK</code> attribute add an instance of <code class="highlighter-rouge">CartesianK</code> to the companion object. Example:</p>
+<div class="language-scala highlighter-rouge"><pre class="highlight"><code><span class="k">val</span> <span class="n">prod</span> <span class="k">=</span> <span class="nc">ExpressionAlg</span><span class="o">[</span><span class="kt">Option</span><span class="o">].</span><span class="n">productK</span><span class="o">(</span><span class="nc">ExpressionAlg</span><span class="o">[</span><span class="kt">Try</span><span class="o">])</span>
+<span class="c1">// prod: ExpressionAlg[[γ$0$]cats.data.Prod[Option,scala.util.Try,γ$0$]] = ExpressionAlg$$anon$2$$anon$3@45d5e12c
+</span>
+<span class="n">prod</span><span class="o">.</span><span class="n">num</span><span class="o">(</span><span class="s">"2"</span><span class="o">)</span>
+<span class="c1">// res6: cats.data.Prod[Option,scala.util.Try,Float] = Prod(Some(2.0),Success(2.0))
+</span></code></pre>
+</div>
+
+</div></div></section><section class="technologies"><div class="container"><div class="row"></div></div></section></main><footer id="site-footer"><div class="container"><div class="row"><div class="col-xs-6"><p>Mainecoon is designed and developed by <a href="https://github.com/kailuowang/mainecoon" target="_blank">Kailuo Wang</a></p></div><div class="col-xs-6"><p class="text-right"><a href="https://github.com/kailuowang/mainecoon"><span class="fa fa-github"></span>View on Github</a></p></div></div></div></footer><script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/js/bootstrap.min.js"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.6.0/highlight.min.js"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.6.0/languages/scala.min.js"></script><script>jQuery(document).ready(function(){hljs.initHighlightingOnLoad();});</script></body></html>
