@@ -3,8 +3,7 @@
 <p>There are three type classes that are higher kinded version of the corresponding type classes in cats.</p>
 
 <ol>
-  <li><code class="highlighter-rouge">FunctorK</code>
-Provides
+  <li><code class="highlighter-rouge">FunctorK</code> provides
     <div class="language-scala highlighter-rouge"><pre class="highlight"><code>  <span class="k">def</span> <span class="n">mapK</span><span class="o">[</span><span class="kt">F</span><span class="o">[</span><span class="k">_</span><span class="o">]</span>, <span class="kt">G</span><span class="o">[</span><span class="k">_</span><span class="o">]](</span><span class="n">af</span><span class="k">:</span> <span class="kt">A</span><span class="o">[</span><span class="kt">F</span><span class="o">])(</span><span class="n">fk</span><span class="k">:</span> <span class="kt">F</span> <span class="kt">~&gt;</span> <span class="kt">G</span><span class="o">)</span><span class="k">:</span> <span class="kt">A</span><span class="o">[</span><span class="kt">G</span><span class="o">]</span>
 </code></pre>
     </div>
@@ -14,8 +13,7 @@ Provides
 <p>For tagless final algebras whose effect <code class="highlighter-rouge">F</code> appears only in the covariant position, instance of <code class="highlighter-rouge">FunctorK</code> can be auto generated through <code class="highlighter-rouge">autoFunctorK</code> annotation</p>
 
 <ol>
-  <li><code class="highlighter-rouge">InvariantK</code>
-Provides
+  <li><code class="highlighter-rouge">InvariantK</code> provides
     <div class="language-scala highlighter-rouge"><pre class="highlight"><code>  <span class="k">def</span> <span class="n">imapK</span><span class="o">[</span><span class="kt">F</span><span class="o">[</span><span class="k">_</span><span class="o">]</span>, <span class="kt">G</span><span class="o">[</span><span class="k">_</span><span class="o">]](</span><span class="n">af</span><span class="k">:</span> <span class="kt">A</span><span class="o">[</span><span class="kt">F</span><span class="o">])(</span><span class="n">fk</span><span class="k">:</span> <span class="kt">F</span> <span class="kt">~&gt;</span> <span class="kt">G</span><span class="o">)(</span><span class="n">gK</span><span class="k">:</span> <span class="kt">G</span> <span class="kt">~&gt;</span> <span class="kt">F</span><span class="o">)</span><span class="k">:</span> <span class="kt">A</span><span class="o">[</span><span class="kt">G</span><span class="o">]</span>
 </code></pre>
     </div>
@@ -25,8 +23,7 @@ Provides
 <p>For tagless final algebras whose effect <code class="highlighter-rouge">F</code> appears in both the covariant positions and contravariant positions, instance of <code class="highlighter-rouge">InvariantK</code> can be auto generated through <code class="highlighter-rouge">autoInvariantK</code> annotation</p>
 
 <ol>
-  <li><code class="highlighter-rouge">CartesianK</code>
-Provides
+  <li><code class="highlighter-rouge">CartesianK</code> provides
     <div class="highlighter-rouge"><pre class="highlight"><code> def productK[F[_], G[_]](af: A[F], ag: A[G]): A[Prod[F, G, ?]]
 </code></pre>
     </div>
