@@ -4,19 +4,16 @@
 
 <p>Mainecoon is developed using <a href="http://scalameta.org/">scalameta</a>, so there are a few dependencies to add in your <code class="highlighter-rouge">build.sbt</code>.</p>
 
-<div class="language-scala highlighter-rouge"><pre class="highlight"><code>
-<span class="n">addCompilerPlugin</span><span class="o">(</span>
-  <span class="o">(</span><span class="s">"org.scalameta"</span> <span class="o">%</span> <span class="s">"paradise"</span> <span class="o">%</span> <span class="s">"3.0.0-M8"</span><span class="o">).</span><span class="n">cross</span><span class="o">(</span><span class="nc">CrossVersion</span><span class="o">.</span><span class="n">full</span><span class="o">)</span>
-<span class="o">)</span>
+<div class="language-scala highlighter-rouge"><pre class="highlight"><code><span class="n">addCompilerPlugin</span><span class="o">(</span>
+  <span class="o">(</span><span class="s">"org.scalameta"</span> <span class="o">%</span> <span class="s">"paradise"</span> <span class="o">%</span> <span class="s">"3.0.0-M8"</span><span class="o">).</span><span class="n">cross</span><span class="o">(</span><span class="nc">CrossVersion</span><span class="o">.</span><span class="n">full</span><span class="o">))</span>
 
 <span class="n">libraryDependencies</span> <span class="o">++=</span> <span class="nc">Seq</span><span class="o">(</span>
   <span class="s">"org.scalameta"</span> <span class="o">%%</span> <span class="s">"scalameta"</span> <span class="o">%</span> <span class="s">"1.7.0"</span> <span class="o">%</span> <span class="nc">Provided</span><span class="o">,</span>
-  <span class="s">"com.kailuowang"</span> <span class="o">%%</span> <span class="s">"mainecoon-macros"</span> <span class="o">%</span> <span class="s">"0.0.3"</span>
-<span class="o">)</span>
+  <span class="s">"com.kailuowang"</span> <span class="o">%%</span> <span class="s">"mainecoon-macros"</span> <span class="o">%</span> <span class="s">"0.0.3"</span><span class="o">)</span>
 </code></pre>
 </div>
 
-<h2 id="transforming-interpreters">Transforming Interpreters</h2>
+<h2 id="a-idauto-transform-hrefauto-transformaauto-transforming-interpreters"><a id="auto-transform" href="#auto-transform"></a>Auto-transforming interpreters</h2>
 
 <p>Say we have a typical tagless encoded algebra <code class="highlighter-rouge">ExpressionAlg[F[_]]</code></p>
 
@@ -40,24 +37,24 @@
 </code></pre>
 </div>
 
-<p>Similar to [simularcum], <code class="highlighter-rouge">@finalAlg</code> adds an <code class="highlighter-rouge">apply</code> method in the companion object so that you can do implicit calling.</p>
+<p>Similar to <a href="https://github.com/mpilquist/simulacrum">simularcum</a>, <code class="highlighter-rouge">@finalAlg</code> adds an <code class="highlighter-rouge">apply</code> method in the companion object so that you can do implicit calling.</p>
 <div class="language-scala highlighter-rouge"><pre class="highlight"><code><span class="nc">ExpressionAlg</span><span class="o">[</span><span class="kt">Try</span><span class="o">]</span>
-<span class="c1">// res2: ExpressionAlg[scala.util.Try] = tryExpression$@4a49622a
+<span class="c1">// res2: ExpressionAlg[scala.util.Try] = tryExpression$@297aff35
 </span></code></pre>
 </div>
 
 <p>The <code class="highlighter-rouge">@autoFunctorK</code> annotation adds a <code class="highlighter-rouge">FunctorK</code> instance for <code class="highlighter-rouge">ExpressionAlg</code> so that you can map
- an <code class="highlighter-rouge">ExpressionAlg[F]</code> to a <code class="highlighter-rouge">ExpressionAlg[G]</code>, if you have a <code class="highlighter-rouge">FunctionK[F, G]</code>, a.k.a. <code class="highlighter-rouge">F ~&gt; G</code>.</p>
+ an <code class="highlighter-rouge">ExpressionAlg[F]</code> to a <code class="highlighter-rouge">ExpressionAlg[G]</code> using a <code class="highlighter-rouge">FunctionK[F, G]</code>, a.k.a. <code class="highlighter-rouge">F ~&gt; G</code>.</p>
 <div class="language-scala highlighter-rouge"><pre class="highlight"><code><span class="k">import</span> <span class="nn">mainecoon.implicits._</span>
 <span class="k">import</span> <span class="nn">cats.implicits._</span>
 <span class="k">import</span> <span class="nn">cats._</span>
 </code></pre>
 </div>
 <div class="language-scala highlighter-rouge"><pre class="highlight"><code><span class="k">implicit</span> <span class="k">val</span> <span class="n">fk</span> <span class="k">:</span> <span class="kt">Try</span> <span class="kt">~&gt;</span> <span class="kt">Option</span> <span class="o">=</span> <span class="n">λ</span><span class="o">[</span><span class="kt">Try</span> <span class="kt">~&gt;</span> <span class="kt">Option</span><span class="o">](</span><span class="k">_</span><span class="o">.</span><span class="n">toOption</span><span class="o">)</span>
-<span class="c1">// fk: scala.util.Try ~&gt; Option = $anon$1@19ad5766
+<span class="c1">// fk: scala.util.Try ~&gt; Option = $anon$1@119c9755
 </span>
 <span class="n">tryExpression</span><span class="o">.</span><span class="n">mapK</span><span class="o">(</span><span class="n">fk</span><span class="o">)</span>
-<span class="c1">// res3: ExpressionAlg[Option] = ExpressionAlg$$anon$4@4fed24ae
+<span class="c1">// res3: ExpressionAlg[Option] = ExpressionAlg$$anon$3@7f0a88d8
 </span></code></pre>
 </div>
 
@@ -65,11 +62,52 @@
 <code class="highlighter-rouge">F ~&gt; G</code>, you automatically have a <code class="highlighter-rouge">ExpressionAlg[G]</code></p>
 
 <div class="language-scala highlighter-rouge"><pre class="highlight"><code><span class="nc">ExpressionAlg</span><span class="o">[</span><span class="kt">Option</span><span class="o">]</span>
-<span class="c1">// res4: ExpressionAlg[Option] = ExpressionAlg$$anon$4@79b424ee
+<span class="c1">// res4: ExpressionAlg[Option] = ExpressionAlg$$anon$3@3194d805
 </span></code></pre>
 </div>
 
-<h2 id="vertical-composition">Vertical composition</h2>
+<h2 id="a-idstack-safe-hrefstack-safeamake-stack-safe-with-free"><a id="stack-safe" href="#stack-safe"></a>Make stack safe with <code class="highlighter-rouge">Free</code></h2>
+<p>Another quick win with a <code class="highlighter-rouge">FunctorK</code> instance is to lift your algebra interpreters to use <code class="highlighter-rouge">Free</code> to achieve stack safety.</p>
+
+<p>For example, say you have an interpreter using <code class="highlighter-rouge">Try</code></p>
+
+<div class="language-scala highlighter-rouge"><pre class="highlight"><code><span class="nd">@finalAlg</span> <span class="nd">@autoFunctorK</span>
+<span class="k">trait</span> <span class="nc">Increment</span><span class="o">[</span><span class="kt">F</span><span class="o">[</span><span class="k">_</span><span class="o">]]</span> <span class="o">{</span>
+  <span class="k">def</span> <span class="n">plusOne</span><span class="o">(</span><span class="n">i</span><span class="k">:</span> <span class="kt">Int</span><span class="o">)</span><span class="k">:</span> <span class="kt">F</span><span class="o">[</span><span class="kt">Int</span><span class="o">]</span>
+<span class="o">}</span>
+
+<span class="k">implicit</span> <span class="k">object</span> <span class="nc">incTry</span> <span class="k">extends</span> <span class="nc">Increment</span><span class="o">[</span><span class="kt">Try</span><span class="o">]</span> <span class="o">{</span>
+  <span class="k">def</span> <span class="n">plusOne</span><span class="o">(</span><span class="n">i</span><span class="k">:</span> <span class="kt">Int</span><span class="o">)</span> <span class="k">=</span> <span class="nc">Try</span><span class="o">(</span><span class="n">i</span> <span class="o">+</span> <span class="mi">1</span><span class="o">)</span>
+<span class="o">}</span>
+
+<span class="k">def</span> <span class="n">program</span><span class="o">[</span><span class="kt">F</span><span class="o">[</span><span class="k">_</span><span class="o">]</span><span class="kt">:</span> <span class="kt">Monad:</span> <span class="kt">Increment</span><span class="o">](</span><span class="n">i</span><span class="k">:</span> <span class="kt">Int</span><span class="o">)</span><span class="k">:</span> <span class="kt">F</span><span class="o">[</span><span class="kt">Int</span><span class="o">]</span> <span class="k">=</span> <span class="k">for</span> <span class="o">{</span>
+  <span class="n">j</span> <span class="k">&lt;-</span> <span class="nc">Increment</span><span class="o">[</span><span class="kt">F</span><span class="o">].</span><span class="n">plusOne</span><span class="o">(</span><span class="n">i</span><span class="o">)</span>
+  <span class="n">z</span> <span class="k">&lt;-</span> <span class="k">if</span> <span class="o">(</span><span class="n">j</span> <span class="o">&lt;</span> <span class="mi">10000</span><span class="o">)</span> <span class="n">program</span><span class="o">[</span><span class="kt">F</span><span class="o">](</span><span class="n">j</span><span class="o">)</span> <span class="k">else</span> <span class="nc">Monad</span><span class="o">[</span><span class="kt">F</span><span class="o">].</span><span class="n">pure</span><span class="o">(</span><span class="n">j</span><span class="o">)</span>
+<span class="o">}</span> <span class="k">yield</span> <span class="n">z</span>
+
+</code></pre>
+</div>
+<p>Obviously, this program is not stack safe.</p>
+<div class="language-scala highlighter-rouge"><pre class="highlight"><code><span class="n">program</span><span class="o">[</span><span class="kt">Try</span><span class="o">](</span><span class="mi">0</span><span class="o">)</span>
+<span class="c1">//throws java.lang.StackOverflowError
+</span></code></pre>
+</div>
+<p>Now lets use auto derivation to lift the interpreter with <code class="highlighter-rouge">Try</code> into an interpreter with <code class="highlighter-rouge">Free</code></p>
+
+<div class="language-scala highlighter-rouge"><pre class="highlight"><code><span class="k">import</span> <span class="nn">cats.free.Free</span>
+<span class="k">import</span> <span class="nn">cats.arrow.FunctionK</span>
+
+<span class="k">implicit</span> <span class="k">def</span> <span class="n">toFree</span><span class="o">[</span><span class="kt">F</span><span class="o">[</span><span class="k">_</span><span class="o">]]</span><span class="k">:</span> <span class="kt">F</span> <span class="kt">~&gt;</span> <span class="kt">Free</span><span class="o">[</span><span class="kt">F</span>, <span class="kt">?</span><span class="o">]</span> <span class="k">=</span> <span class="n">λ</span><span class="o">[</span><span class="kt">F</span> <span class="kt">~&gt;</span> <span class="kt">Free</span><span class="o">[</span><span class="kt">F</span>, <span class="kt">?</span><span class="o">]](</span><span class="n">t</span> <span class="k">=&gt;</span> <span class="nc">Free</span><span class="o">.</span><span class="n">liftF</span><span class="o">(</span><span class="n">t</span><span class="o">))</span>
+</code></pre>
+</div>
+<div class="language-scala highlighter-rouge"><pre class="highlight"><code><span class="n">program</span><span class="o">[</span><span class="kt">Free</span><span class="o">[</span><span class="kt">Try</span>, <span class="kt">?</span><span class="o">]](</span><span class="mi">0</span><span class="o">).</span><span class="n">foldMap</span><span class="o">(</span><span class="nc">FunctionK</span><span class="o">.</span><span class="n">id</span><span class="o">)</span>
+<span class="c1">// res9: scala.util.Try[Int] = Success(10000)
+</span></code></pre>
+</div>
+
+<p>Again the magic here is that mainecoon auto derive an <code class="highlighter-rouge">Increment[Free[Try, ?]]</code> when there is an implicit <code class="highlighter-rouge">Try ~&gt; Free[Try, ?]</code> and a <code class="highlighter-rouge">Increment[Try]</code> in scope.</p>
+
+<h2 id="a-idvertical-comp-hrefvertical-compavertical-composition"><a id="vertical-comp" href="#vertical-comp"></a>Vertical composition</h2>
 
 <p>Say you have another algebra that could use the <code class="highlighter-rouge">ExpressionAlg</code>.</p>
 
@@ -99,18 +137,18 @@
 <p>Note that the <code class="highlighter-rouge">ExpressionAlg</code> interpreter needed here is a <code class="highlighter-rouge">ExpressionAlg[Option]</code>, while we only defined a <code class="highlighter-rouge">ExpressionAlg[Try]</code>. However since we have a <code class="highlighter-rouge">fk: Try ~&gt; Option</code> in scope, we automatically have <code class="highlighter-rouge">ExpressionAlg[Option]</code> in scope. We can just write</p>
 
 <div class="language-scala highlighter-rouge"><pre class="highlight"><code><span class="k">new</span> <span class="nc">StringCalculatorOption</span>
-<span class="c1">// res5: StringCalculatorOption = StringCalculatorOption@8b5dde7
+<span class="c1">// res10: StringCalculatorOption = StringCalculatorOption@964d080
 </span></code></pre>
 </div>
 
-<h2 id="horizontal-composition">Horizontal composition</h2>
+<h2 id="a-idhorizontal-comp-hrefhorizontal-compahorizontal-composition"><a id="horizontal-comp" href="#horizontal-comp"></a>Horizontal composition</h2>
 
 <p>You can use <code class="highlighter-rouge">CartesianK</code> to create a new interpreter that runs two interpreters simultaneously and return the result as a <code class="highlighter-rouge">cats.Prod</code>. The <code class="highlighter-rouge">@autoCartesianK</code> attribute add an instance of <code class="highlighter-rouge">CartesianK</code> to the companion object. Example:</p>
 <div class="language-scala highlighter-rouge"><pre class="highlight"><code><span class="k">val</span> <span class="n">prod</span> <span class="k">=</span> <span class="nc">ExpressionAlg</span><span class="o">[</span><span class="kt">Option</span><span class="o">].</span><span class="n">productK</span><span class="o">(</span><span class="nc">ExpressionAlg</span><span class="o">[</span><span class="kt">Try</span><span class="o">])</span>
-<span class="c1">// prod: ExpressionAlg[[γ$0$]cats.data.Prod[Option,scala.util.Try,γ$0$]] = ExpressionAlg$$anon$2$$anon$3@fd73d98
+<span class="c1">// prod: ExpressionAlg[[γ$0$]cats.data.Prod[Option,scala.util.Try,γ$0$]] = ExpressionAlg$$anon$2$$anon$4@2d162a2a
 </span>
 <span class="n">prod</span><span class="o">.</span><span class="n">num</span><span class="o">(</span><span class="s">"2"</span><span class="o">)</span>
-<span class="c1">// res6: cats.data.Prod[Option,scala.util.Try,Float] = Prod(Some(2.0),Success(2.0))
+<span class="c1">// res11: cats.data.Prod[Option,scala.util.Try,Float] = Prod(Some(2.0),Success(2.0))
 </span></code></pre>
 </div>
 
