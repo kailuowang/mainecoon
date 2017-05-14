@@ -1,15 +1,15 @@
-<html><head><meta charset="utf-8" /><meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" /><title>Mainecoon</title><meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="description" content="A library for transforming and composing final tagless algebras" /><meta name="author" content="Kailuo Wang" /><meta name="og:image" content="/mainecoon/img/poster.png" /><meta name="og:title" content="Mainecoon" /><meta name="og:site_name" content="Mainecoon" /><meta name="og:url" content="https://github.com/kailuowang/mainecoon" /><meta name="og:type" content="website" /><meta name="og:description" content="A library for transforming and composing final tagless algebras" /><meta name="twitter:image" content="/mainecoon/img/poster.png" /><meta name="twitter:card" content="summary_large_image" /><meta name="twitter:site" content="" /><link rel="icon" type="image/png" href="/mainecoon/img/favicon.png" /><link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" /><link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css" /><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.6.0/styles/atom-one-light.min.css" /><link rel="stylesheet" href="/mainecoon/css/style.css" /><link rel="stylesheet" href="/mainecoon/css/palette.css" /><link rel="stylesheet" href="/mainecoon/css/override.css" /></head><body><header id="site-header"><div class="navbar-wrapper"><div class="container"><div class="row"><div class="col-xs-6"><a href="/mainecoon/" class="brand"><div class="icon-wrapper" style="background:url('/mainecoon/img/navbar_brand.png') no-repeat"><span>Mainecoon</span></div></a></div><div class="col-xs-6"><nav class="text-right"><ul class=""><li><a href="https://github.com/kailuowang/mainecoon"><i class="fa fa-github"></i><span class="hidden-xs">GitHub</span></a></li></ul></nav></div></div></div></div><div class="jumbotron" style="background-image:url('/mainecoon/img/jumbotron_pattern.png')"><div class="container"><h1 class="text-center">A library for transforming and composing final tagless algebras</h1><h2></h2><p class="text-center"><a href="https://github.com/kailuowang/mainecoon" class="btn btn-outline-inverse">View on GitHub</a></p></div></div><div><ul class="horizontalNav">     <li><a class=" active " href="/mainecoon/">Home</a></li>  <li><a class="" href="/mainecoon/faq.html">FAQ</a></li>  <li><a class="" href="/mainecoon/typeclasses.html">Type classes</a></li> </ul></div></header><main id="site-main"><section class="use"><div class="container"><div id="content"><p>Mainecoon is a small library built to facilitate composing tagless final encoded algebras.</p>
+<html><head><meta charset="utf-8" /><meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" /><title>Mainecoon</title><meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="description" content="A library for transforming and composing tagless final algebras" /><meta name="author" content="Kailuo Wang" /><meta name="og:image" content="/mainecoon/img/poster.png" /><meta name="og:title" content="Mainecoon" /><meta name="og:site_name" content="Mainecoon" /><meta name="og:url" content="https://github.com/kailuowang/mainecoon" /><meta name="og:type" content="website" /><meta name="og:description" content="A library for transforming and composing tagless final algebras" /><meta name="twitter:image" content="/mainecoon/img/poster.png" /><meta name="twitter:card" content="summary_large_image" /><meta name="twitter:site" content="" /><link rel="icon" type="image/png" href="/mainecoon/img/favicon.png" /><link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" /><link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css" /><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.6.0/styles/atom-one-light.min.css" /><link rel="stylesheet" href="/mainecoon/css/style.css" /><link rel="stylesheet" href="/mainecoon/css/palette.css" /><link rel="stylesheet" href="/mainecoon/css/override.css" /></head><body><header id="site-header"><div class="navbar-wrapper"><div class="container"><div class="row"><div class="col-xs-6"><a href="/mainecoon/" class="brand"><div class="icon-wrapper" style="background:url('/mainecoon/img/navbar_brand.png') no-repeat"><span>Mainecoon</span></div></a></div><div class="col-xs-6"><nav class="text-right"><ul class=""><li><a href="https://github.com/kailuowang/mainecoon"><i class="fa fa-github"></i><span class="hidden-xs">GitHub</span></a></li></ul></nav></div></div></div></div><div class="jumbotron" style="background-image:url('/mainecoon/img/jumbotron_pattern.png')"><div class="container"><h1 class="text-center">A library for transforming and composing tagless final algebras</h1><h2></h2><p class="text-center"><a href="https://github.com/kailuowang/mainecoon" class="btn btn-outline-inverse">View on GitHub</a></p></div></div><div><ul class="horizontalNav">     <li><a class=" active " href="/mainecoon/">Home</a></li>  <li><a class="" href="/mainecoon/faq.html">FAQ</a></li>  <li><a class="" href="/mainecoon/typeclasses.html">Type classes</a></li> </ul></div></header><main id="site-main"><section class="use"><div class="container"><div id="content"><p>Mainecoon is a small library built to facilitate composing tagless final encoded algebras.</p>
 
 <h2 id="installation">Installation</h2>
 
-<p>Mainecoon is developed using <a href="http://scalameta.org/">scalameta</a>, so there are a few dependencies to add in your <code class="highlighter-rouge">build.sbt</code>.</p>
+<p>Mainecoon is available on scala 2.11, 2.12, and scalajs. The macro annotations are developed using <a href="http://scalameta.org/">scalameta</a>, so there are a few dependencies to add in your <code class="highlighter-rouge">build.sbt</code>.</p>
 
 <div class="language-scala highlighter-rouge"><pre class="highlight"><code><span class="n">addCompilerPlugin</span><span class="o">(</span>
   <span class="o">(</span><span class="s">"org.scalameta"</span> <span class="o">%</span> <span class="s">"paradise"</span> <span class="o">%</span> <span class="s">"3.0.0-M8"</span><span class="o">).</span><span class="n">cross</span><span class="o">(</span><span class="nc">CrossVersion</span><span class="o">.</span><span class="n">full</span><span class="o">))</span>
 
 <span class="n">libraryDependencies</span> <span class="o">++=</span> <span class="nc">Seq</span><span class="o">(</span>
   <span class="s">"org.scalameta"</span> <span class="o">%%</span> <span class="s">"scalameta"</span> <span class="o">%</span> <span class="s">"1.7.0"</span> <span class="o">%</span> <span class="nc">Provided</span><span class="o">,</span>
-  <span class="s">"com.kailuowang"</span> <span class="o">%%</span> <span class="s">"mainecoon-macros"</span> <span class="o">%</span> <span class="s">"0.0.3"</span><span class="o">)</span>
+  <span class="s">"com.kailuowang"</span> <span class="o">%%</span> <span class="s">"mainecoon-macros"</span> <span class="o">%</span> <span class="s">"0.0.4"</span><span class="o">)</span>
 </code></pre>
 </div>
 
@@ -39,7 +39,7 @@
 
 <p>Similar to <a href="https://github.com/mpilquist/simulacrum">simularcum</a>, <code class="highlighter-rouge">@finalAlg</code> adds an <code class="highlighter-rouge">apply</code> method in the companion object so that you can do implicit calling.</p>
 <div class="language-scala highlighter-rouge"><pre class="highlight"><code><span class="nc">ExpressionAlg</span><span class="o">[</span><span class="kt">Try</span><span class="o">]</span>
-<span class="c1">// res2: ExpressionAlg[scala.util.Try] = tryExpression$@297aff35
+<span class="c1">// res2: ExpressionAlg[scala.util.Try] = tryExpression$@1c07f6c9
 </span></code></pre>
 </div>
 
@@ -51,10 +51,10 @@
 </code></pre>
 </div>
 <div class="language-scala highlighter-rouge"><pre class="highlight"><code><span class="k">implicit</span> <span class="k">val</span> <span class="n">fk</span> <span class="k">:</span> <span class="kt">Try</span> <span class="kt">~&gt;</span> <span class="kt">Option</span> <span class="o">=</span> <span class="n">λ</span><span class="o">[</span><span class="kt">Try</span> <span class="kt">~&gt;</span> <span class="kt">Option</span><span class="o">](</span><span class="k">_</span><span class="o">.</span><span class="n">toOption</span><span class="o">)</span>
-<span class="c1">// fk: scala.util.Try ~&gt; Option = $anon$1@119c9755
+<span class="c1">// fk: scala.util.Try ~&gt; Option = $anon$1@b85330c
 </span>
 <span class="n">tryExpression</span><span class="o">.</span><span class="n">mapK</span><span class="o">(</span><span class="n">fk</span><span class="o">)</span>
-<span class="c1">// res3: ExpressionAlg[Option] = ExpressionAlg$$anon$3@7f0a88d8
+<span class="c1">// res3: ExpressionAlg[Option] = ExpressionAlg$$anon$3@1f6ff858
 </span></code></pre>
 </div>
 
@@ -62,7 +62,7 @@
 <code class="highlighter-rouge">F ~&gt; G</code>, you automatically have a <code class="highlighter-rouge">ExpressionAlg[G]</code></p>
 
 <div class="language-scala highlighter-rouge"><pre class="highlight"><code><span class="nc">ExpressionAlg</span><span class="o">[</span><span class="kt">Option</span><span class="o">]</span>
-<span class="c1">// res4: ExpressionAlg[Option] = ExpressionAlg$$anon$3@3194d805
+<span class="c1">// res4: ExpressionAlg[Option] = ExpressionAlg$$anon$3@581ebea4
 </span></code></pre>
 </div>
 
@@ -137,7 +137,7 @@
 <p>Note that the <code class="highlighter-rouge">ExpressionAlg</code> interpreter needed here is a <code class="highlighter-rouge">ExpressionAlg[Option]</code>, while we only defined a <code class="highlighter-rouge">ExpressionAlg[Try]</code>. However since we have a <code class="highlighter-rouge">fk: Try ~&gt; Option</code> in scope, we automatically have <code class="highlighter-rouge">ExpressionAlg[Option]</code> in scope. We can just write</p>
 
 <div class="language-scala highlighter-rouge"><pre class="highlight"><code><span class="k">new</span> <span class="nc">StringCalculatorOption</span>
-<span class="c1">// res10: StringCalculatorOption = StringCalculatorOption@964d080
+<span class="c1">// res10: StringCalculatorOption = StringCalculatorOption@119d2ee2
 </span></code></pre>
 </div>
 
@@ -145,7 +145,7 @@
 
 <p>You can use <code class="highlighter-rouge">CartesianK</code> to create a new interpreter that runs two interpreters simultaneously and return the result as a <code class="highlighter-rouge">cats.Prod</code>. The <code class="highlighter-rouge">@autoCartesianK</code> attribute add an instance of <code class="highlighter-rouge">CartesianK</code> to the companion object. Example:</p>
 <div class="language-scala highlighter-rouge"><pre class="highlight"><code><span class="k">val</span> <span class="n">prod</span> <span class="k">=</span> <span class="nc">ExpressionAlg</span><span class="o">[</span><span class="kt">Option</span><span class="o">].</span><span class="n">productK</span><span class="o">(</span><span class="nc">ExpressionAlg</span><span class="o">[</span><span class="kt">Try</span><span class="o">])</span>
-<span class="c1">// prod: ExpressionAlg[[γ$0$]cats.data.Prod[Option,scala.util.Try,γ$0$]] = ExpressionAlg$$anon$2$$anon$4@2d162a2a
+<span class="c1">// prod: ExpressionAlg[[γ$0$]cats.data.Prod[Option,scala.util.Try,γ$0$]] = ExpressionAlg$$anon$2$$anon$4@79911c6c
 </span>
 <span class="n">prod</span><span class="o">.</span><span class="n">num</span><span class="o">(</span><span class="s">"2"</span><span class="o">)</span>
 <span class="c1">// res11: cats.data.Prod[Option,scala.util.Try,Float] = Prod(Some(2.0),Success(2.0))
