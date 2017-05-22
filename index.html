@@ -12,6 +12,8 @@
   <span class="s">"com.kailuowang"</span> <span class="o">%%</span> <span class="s">"mainecoon-macros"</span> <span class="o">%</span> <span class="s">"0.1.0"</span><span class="o">)</span>
 </code></pre>
 </div>
+<p>Note that <code class="highlighter-rouge">org.scalameta.paradise</code> is a fork of <code class="highlighter-rouge">org.scalamacros.paradise</code>. So if you already have the
+<code class="highlighter-rouge">org.scalamacros.paradise</code> dependency, you might need to replace it.</p>
 
 <h2 id="a-idauto-transform-hrefauto-transformaauto-transforming-interpreters"><a id="auto-transform" href="#auto-transform"></a>Auto-transforming interpreters</h2>
 
@@ -39,32 +41,33 @@
 
 <p>Similar to <a href="https://github.com/mpilquist/simulacrum">simularcum</a>, <code class="highlighter-rouge">@finalAlg</code> adds an <code class="highlighter-rouge">apply</code> method in the companion object so that you can do implicit calling.</p>
 <div class="language-scala highlighter-rouge"><pre class="highlight"><code><span class="nc">ExpressionAlg</span><span class="o">[</span><span class="kt">Try</span><span class="o">]</span>
-<span class="c1">// res2: ExpressionAlg[scala.util.Try] = tryExpression$@2a8c8da2
+<span class="c1">// res2: ExpressionAlg[scala.util.Try] = tryExpression$@64899d2
 </span></code></pre>
 </div>
 
 <p>The <code class="highlighter-rouge">@autoFunctorK</code> annotation adds a <code class="highlighter-rouge">FunctorK</code> instance for <code class="highlighter-rouge">ExpressionAlg</code> so that you can map
- an <code class="highlighter-rouge">ExpressionAlg[F]</code> to a <code class="highlighter-rouge">ExpressionAlg[G]</code> using a <code class="highlighter-rouge">FunctionK[F, G]</code>, a.k.a. <code class="highlighter-rouge">F ~&gt; G</code>.</p>
+ an <code class="highlighter-rouge">ExpressionAlg[F]</code> to a <code class="highlighter-rouge">ExpressionAlg[G]</code> using a <a href="http://typelevel.org/cats/datatypes/functionk.html"><code class="highlighter-rouge">FunctionK[F, G]</code></a>, a.k.a. <code class="highlighter-rouge">F ~&gt; G</code>.</p>
 <div class="language-scala highlighter-rouge"><pre class="highlight"><code><span class="k">import</span> <span class="nn">mainecoon.implicits._</span>
 <span class="k">import</span> <span class="nn">cats.implicits._</span>
 <span class="k">import</span> <span class="nn">cats._</span>
 </code></pre>
 </div>
 <div class="language-scala highlighter-rouge"><pre class="highlight"><code><span class="k">implicit</span> <span class="k">val</span> <span class="n">fk</span> <span class="k">:</span> <span class="kt">Try</span> <span class="kt">~&gt;</span> <span class="kt">Option</span> <span class="o">=</span> <span class="n">λ</span><span class="o">[</span><span class="kt">Try</span> <span class="kt">~&gt;</span> <span class="kt">Option</span><span class="o">](</span><span class="k">_</span><span class="o">.</span><span class="n">toOption</span><span class="o">)</span>
-<span class="c1">// fk: scala.util.Try ~&gt; Option = $anon$1@33c9a326
+<span class="c1">// fk: scala.util.Try ~&gt; Option = $anon$1@5fb40f3b
 </span>
 <span class="n">tryExpression</span><span class="o">.</span><span class="n">mapK</span><span class="o">(</span><span class="n">fk</span><span class="o">)</span>
-<span class="c1">// res3: ExpressionAlg[Option] = ExpressionAlg$$anon$3@4c1c941c
+<span class="c1">// res3: ExpressionAlg[Option] = ExpressionAlg$$anon$3@159adb61
 </span></code></pre>
 </div>
-
-<p>In fact, <code class="highlighter-rouge">@autoFunctorK</code> also add an auto derivation, so that if you have an implicit  <code class="highlighter-rouge">ExpressionAlg[F]</code> and an implicit
-<code class="highlighter-rouge">F ~&gt; G</code>, you automatically have a <code class="highlighter-rouge">ExpressionAlg[G]</code>. This auto derivation can be turned off using an annotation argument: <code class="highlighter-rouge">@autoFunctorK(autoDerivation = false)</code>.</p>
+<p>Note that the <code class="highlighter-rouge">Try ~&gt; Option</code> is implemented using <a href="https://github.com/non/kind-projector#polymorphic-lambda-values">kind projector’s polymorphic lambda syntax</a>. <br />
+<code class="highlighter-rouge">@autoFunctorK</code> also add an auto derivation, so that if you have an implicit  <code class="highlighter-rouge">ExpressionAlg[F]</code> and an implicit
+<code class="highlighter-rouge">F ~&gt; G</code>, you automatically have a <code class="highlighter-rouge">ExpressionAlg[G]</code>.</p>
 
 <div class="language-scala highlighter-rouge"><pre class="highlight"><code><span class="nc">ExpressionAlg</span><span class="o">[</span><span class="kt">Option</span><span class="o">]</span>
-<span class="c1">// res4: ExpressionAlg[Option] = ExpressionAlg$$anon$3@7cdf15f5
+<span class="c1">// res4: ExpressionAlg[Option] = ExpressionAlg$$anon$3@72ba9045
 </span></code></pre>
 </div>
+<p>This auto derivation can be turned off using an annotation argument: <code class="highlighter-rouge">@autoFunctorK(autoDerivation = false)</code>.</p>
 
 <h2 id="a-idstack-safe-hrefstack-safeamake-stack-safe-with-free"><a id="stack-safe" href="#stack-safe"></a>Make stack safe with <code class="highlighter-rouge">Free</code></h2>
 <p>Another quick win with a <code class="highlighter-rouge">FunctorK</code> instance is to lift your algebra interpreters to use <code class="highlighter-rouge">Free</code> to achieve stack safety.</p>
@@ -137,7 +140,7 @@
 <p>Note that the <code class="highlighter-rouge">ExpressionAlg</code> interpreter needed here is a <code class="highlighter-rouge">ExpressionAlg[Option]</code>, while we only defined a <code class="highlighter-rouge">ExpressionAlg[Try]</code>. However since we have a <code class="highlighter-rouge">fk: Try ~&gt; Option</code> in scope, we automatically have <code class="highlighter-rouge">ExpressionAlg[Option]</code> in scope. We can just write</p>
 
 <div class="language-scala highlighter-rouge"><pre class="highlight"><code><span class="k">new</span> <span class="nc">StringCalculatorOption</span>
-<span class="c1">// res10: StringCalculatorOption = StringCalculatorOption@7e43b1e0
+<span class="c1">// res10: StringCalculatorOption = StringCalculatorOption@63ca53b4
 </span></code></pre>
 </div>
 
@@ -145,7 +148,7 @@
 
 <p>You can use <code class="highlighter-rouge">CartesianK</code> to create a new interpreter that runs two interpreters simultaneously and return the result as a <code class="highlighter-rouge">cats.Prod</code>. The <code class="highlighter-rouge">@autoCartesianK</code> attribute add an instance of <code class="highlighter-rouge">CartesianK</code> to the companion object. Example:</p>
 <div class="language-scala highlighter-rouge"><pre class="highlight"><code><span class="k">val</span> <span class="n">prod</span> <span class="k">=</span> <span class="nc">ExpressionAlg</span><span class="o">[</span><span class="kt">Option</span><span class="o">].</span><span class="n">productK</span><span class="o">(</span><span class="nc">ExpressionAlg</span><span class="o">[</span><span class="kt">Try</span><span class="o">])</span>
-<span class="c1">// prod: ExpressionAlg[[γ$0$]cats.data.Prod[Option,scala.util.Try,γ$0$]] = ExpressionAlg$$anon$2$$anon$4@67574d6d
+<span class="c1">// prod: ExpressionAlg[[γ$0$]cats.data.Prod[Option,scala.util.Try,γ$0$]] = ExpressionAlg$$anon$2$$anon$4@66bea4d3
 </span>
 <span class="n">prod</span><span class="o">.</span><span class="n">num</span><span class="o">(</span><span class="s">"2"</span><span class="o">)</span>
 <span class="c1">// res11: cats.data.Prod[Option,scala.util.Try,Float] = Prod(Some(2.0),Success(2.0))
