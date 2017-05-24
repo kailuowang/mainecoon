@@ -44,7 +44,7 @@
 
 <p>Similar to <a href="https://github.com/mpilquist/simulacrum">simularcum</a>, <code class="highlighter-rouge">@finalAlg</code> adds an <code class="highlighter-rouge">apply</code> method in the companion object so that you can do implicit calling.</p>
 <div class="language-scala highlighter-rouge"><pre class="highlight"><code><span class="nc">ExpressionAlg</span><span class="o">[</span><span class="kt">Try</span><span class="o">]</span>
-<span class="c1">// res2: ExpressionAlg[scala.util.Try] = tryExpression$@47182726
+<span class="c1">// res2: ExpressionAlg[scala.util.Try] = tryExpression$@baf9a50
 </span></code></pre>
 </div>
 
@@ -58,10 +58,10 @@ The <code class="highlighter-rouge">@autoFunctorK</code> annotation automaticall
 </code></pre>
 </div>
 <div class="language-scala highlighter-rouge"><pre class="highlight"><code><span class="k">implicit</span> <span class="k">val</span> <span class="n">fk</span> <span class="k">:</span> <span class="kt">Try</span> <span class="kt">~&gt;</span> <span class="kt">Option</span> <span class="o">=</span> <span class="n">λ</span><span class="o">[</span><span class="kt">Try</span> <span class="kt">~&gt;</span> <span class="kt">Option</span><span class="o">](</span><span class="k">_</span><span class="o">.</span><span class="n">toOption</span><span class="o">)</span>
-<span class="c1">// fk: scala.util.Try ~&gt; Option = $anon$1@426cccb9
+<span class="c1">// fk: scala.util.Try ~&gt; Option = $anon$1@49af3217
 </span>
 <span class="n">tryExpression</span><span class="o">.</span><span class="n">mapK</span><span class="o">(</span><span class="n">fk</span><span class="o">)</span>
-<span class="c1">// res3: ExpressionAlg[Option] = ExpressionAlg$$anon$3@6f97c216
+<span class="c1">// res3: ExpressionAlg[Option] = ExpressionAlg$$anon$3@293f1723
 </span></code></pre>
 </div>
 <p>Note that the <code class="highlighter-rouge">Try ~&gt; Option</code> is implemented using <a href="https://github.com/non/kind-projector#polymorphic-lambda-values">kind projector’s polymorphic lambda syntax</a>. <br />
@@ -72,7 +72,7 @@ The <code class="highlighter-rouge">@autoFunctorK</code> annotation automaticall
 covariant position (i.e. the return types). For algebras with effect type also appearing in the contravariant position (i.e. argument types), mainecoon provides a <a href="typeclasses.html#invariantK"><code class="highlighter-rouge">InvariantK</code></a> type class and an <code class="highlighter-rouge">autoInvariantK</code> annotation to automatically generate instances.</p>
 
 <div class="language-scala highlighter-rouge"><pre class="highlight"><code><span class="nc">ExpressionAlg</span><span class="o">[</span><span class="kt">Option</span><span class="o">]</span>
-<span class="c1">// res4: ExpressionAlg[Option] = ExpressionAlg$$anon$3@f6d774f
+<span class="c1">// res4: ExpressionAlg[Option] = ExpressionAlg$$anon$3@1bdc8210
 </span></code></pre>
 </div>
 <p>This auto derivation can be turned off using an annotation argument: <code class="highlighter-rouge">@autoFunctorK(autoDerivation = false)</code>.</p>
@@ -148,7 +148,7 @@ covariant position (i.e. the return types). For algebras with effect type also a
 <p>Note that the <code class="highlighter-rouge">ExpressionAlg</code> interpreter needed here is a <code class="highlighter-rouge">ExpressionAlg[Option]</code>, while we only defined a <code class="highlighter-rouge">ExpressionAlg[Try]</code>. However since we have a <code class="highlighter-rouge">fk: Try ~&gt; Option</code> in scope, we automatically have <code class="highlighter-rouge">ExpressionAlg[Option]</code> in scope. We can just write</p>
 
 <div class="language-scala highlighter-rouge"><pre class="highlight"><code><span class="k">new</span> <span class="nc">StringCalculatorOption</span>
-<span class="c1">// res10: StringCalculatorOption = StringCalculatorOption@57a6fd94
+<span class="c1">// res10: StringCalculatorOption = StringCalculatorOption@1ea9f455
 </span></code></pre>
 </div>
 
@@ -156,7 +156,7 @@ covariant position (i.e. the return types). For algebras with effect type also a
 
 <p>You can use the <a href="typeclasses.html#cartesianK"><code class="highlighter-rouge">CartesianK</code></a> type class to create a new interpreter that runs two interpreters simultaneously and return the result as a <code class="highlighter-rouge">cats.Prod</code>. The <code class="highlighter-rouge">@autoCartesianK</code> attribute add an instance of <code class="highlighter-rouge">CartesianK</code> to the companion object. Example:</p>
 <div class="language-scala highlighter-rouge"><pre class="highlight"><code><span class="k">val</span> <span class="n">prod</span> <span class="k">=</span> <span class="nc">ExpressionAlg</span><span class="o">[</span><span class="kt">Option</span><span class="o">].</span><span class="n">productK</span><span class="o">(</span><span class="nc">ExpressionAlg</span><span class="o">[</span><span class="kt">Try</span><span class="o">])</span>
-<span class="c1">// prod: ExpressionAlg[[γ$0$]cats.data.Prod[Option,scala.util.Try,γ$0$]] = ExpressionAlg$$anon$2$$anon$4@5be89211
+<span class="c1">// prod: ExpressionAlg[[γ$0$]cats.data.Prod[Option,scala.util.Try,γ$0$]] = ExpressionAlg$$anon$2$$anon$4@605219d0
 </span>
 <span class="n">prod</span><span class="o">.</span><span class="n">num</span><span class="o">(</span><span class="s">"2"</span><span class="o">)</span>
 <span class="c1">// res11: cats.data.Prod[Option,scala.util.Try,Float] = Prod(Some(2.0),Success(2.0))
@@ -167,13 +167,13 @@ covariant position (i.e. the return types). For algebras with effect type also a
 
 <p>For example.</p>
 <div class="language-scala highlighter-rouge"><pre class="highlight"><code><span class="k">val</span> <span class="n">listInterpreter</span> <span class="k">=</span> <span class="nc">ExpressionAlg</span><span class="o">[</span><span class="kt">Option</span><span class="o">].</span><span class="n">mapK</span><span class="o">(</span><span class="n">λ</span><span class="o">[</span><span class="kt">Option</span> <span class="kt">~&gt;</span> <span class="kt">List</span><span class="o">](</span><span class="k">_</span><span class="o">.</span><span class="n">toList</span><span class="o">))</span>
-<span class="c1">// listInterpreter: ExpressionAlg[List] = ExpressionAlg$$anon$3@7acdc7c5
+<span class="c1">// listInterpreter: ExpressionAlg[List] = ExpressionAlg$$anon$3@8aef481
 </span>
 <span class="k">val</span> <span class="n">vectorInterpreter</span> <span class="k">=</span> <span class="n">listInterpreter</span><span class="o">.</span><span class="n">mapK</span><span class="o">(</span><span class="n">λ</span><span class="o">[</span><span class="kt">List</span> <span class="kt">~&gt;</span> <span class="kt">Vector</span><span class="o">](</span><span class="k">_</span><span class="o">.</span><span class="n">toVector</span><span class="o">))</span>
-<span class="c1">// vectorInterpreter: ExpressionAlg[Vector] = ExpressionAlg$$anon$3@169c08d1
+<span class="c1">// vectorInterpreter: ExpressionAlg[Vector] = ExpressionAlg$$anon$3@51f7ff09
 </span>
 <span class="k">val</span> <span class="n">prod4</span> <span class="k">=</span> <span class="nc">ExpressionAlg</span><span class="o">.</span><span class="n">product4K</span><span class="o">(</span><span class="nc">ExpressionAlg</span><span class="o">[</span><span class="kt">Try</span><span class="o">],</span> <span class="nc">ExpressionAlg</span><span class="o">[</span><span class="kt">Option</span><span class="o">],</span> <span class="n">listInterpreter</span><span class="o">,</span> <span class="n">vectorInterpreter</span><span class="o">)</span>
-<span class="c1">// prod4: ExpressionAlg[[T](scala.util.Try[T], Option[T], List[T], Vector[T])] = ExpressionAlg$$anon$6@3c67da0e
+<span class="c1">// prod4: ExpressionAlg[[T](scala.util.Try[T], Option[T], List[T], Vector[T])] = ExpressionAlg$$anon$6@431b463a
 </span>
 <span class="n">prod4</span><span class="o">.</span><span class="n">num</span><span class="o">(</span><span class="s">"3"</span><span class="o">)</span>
 <span class="c1">// res12: (scala.util.Try[Float], Option[Float], List[Float], Vector[Float]) = (Success(3.0),Some(3.0),List(3.0),Vector(3.0))
