@@ -60,8 +60,19 @@ The <code class="highlighter-rouge">FunctorK</code> instance it generates does n
 <p>However, there is also <code class="highlighter-rouge">mapK</code> function added to the companion object of the algebra which gives you more precise type.</p>
 
 <div class="language-scala highlighter-rouge"><pre class="highlight"><code><span class="k">val</span> <span class="n">barOption</span><span class="k">:</span> <span class="kt">Bar</span><span class="o">[</span><span class="kt">Option</span><span class="o">]</span> <span class="o">{</span> <span class="k">type</span> <span class="kt">T</span> <span class="o">=</span> <span class="nc">String</span> <span class="o">}</span> <span class="k">=</span> <span class="nc">Bar</span><span class="o">.</span><span class="n">mapK</span><span class="o">(</span><span class="n">tryInt</span><span class="o">)(</span><span class="n">fk</span><span class="o">)</span>
-<span class="c1">// barOption: Bar[Option]{type T = String} = Bar$$anon$2@714f9da4
+<span class="c1">// barOption: Bar[Option]{type T = String} = Bar$$anon$2@36291553
 </span></code></pre>
 </div>
 
+<h3 id="i-am-seeing-diverging-implicit-expansion-for-type-myalgebraf">I am seeing diverging implicit expansion for type MyAlgebra[F]</h3>
+
+<p>If you see error likes the following when you try to summon a specific instance of <code class="highlighter-rouge">MyAlgebra</code></p>
+
+<blockquote>
+  <p>diverging implicit expansion for type MyAlgebra[F]</p>
+
+  <p>[error] starting with method autoDeriveFromFunctorK in object MyAlgebra</p>
+</blockquote>
+
+<p>It probably means that necessary implicit <code class="highlighter-rouge">MyAlgebra</code> instance and/or the corresponding <code class="highlighter-rouge">FunctionK</code> is missing in scope.</p>
 </div></div></section></main><footer id="site-footer"><div class="container"><div class="row"><div class="col-xs-6"><p>Mainecoon is designed and developed by <a href="https://github.com/kailuowang/mainecoon" target="_blank">Kailuo Wang</a></p></div><div class="col-xs-6"><p class="text-right"><a href="https://github.com/kailuowang/mainecoon"><span class="fa fa-github"></span>View on Github</a></p></div></div></div></footer><script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/js/bootstrap.min.js"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.6.0/highlight.min.js"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.6.0/languages/scala.min.js"></script><script>jQuery(document).ready(function(){hljs.initHighlightingOnLoad();});</script></body></html>
