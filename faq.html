@@ -18,10 +18,12 @@
 <span class="o">}</span>
 
 <span class="k">implicit</span> <span class="k">val</span> <span class="n">fk</span><span class="k">:</span> <span class="kt">Try</span> <span class="kt">~&gt;</span> <span class="kt">Option</span> <span class="o">=</span> <span class="n">λ</span><span class="o">[</span><span class="kt">Try</span> <span class="kt">~&gt;</span> <span class="kt">Option</span><span class="o">](</span><span class="k">_</span><span class="o">.</span><span class="n">toOption</span><span class="o">)</span>
+
+<span class="k">import</span> <span class="nn">Foo.autoDerive._</span>
 </code></pre>
 </div>
 <div class="language-scala highlighter-rouge"><pre class="highlight"><code><span class="nc">Foo</span><span class="o">[</span><span class="kt">Option</span>, <span class="kt">String</span><span class="o">].</span><span class="n">a</span><span class="o">(</span><span class="mi">3</span><span class="o">)</span>
-<span class="c1">// res3: Option[String] = Some(3)
+<span class="c1">// res4: Option[String] = Some(3)
 </span></code></pre>
 </div>
 
@@ -30,28 +32,31 @@
 <p>Yes but with some caveats.
 The <code class="highlighter-rouge">FunctorK</code> instance it generates does not refine to the type member. E.g.</p>
 
-<div class="language-scala highlighter-rouge"><pre class="highlight"><code> <span class="nd">@autoFunctorK</span> <span class="nd">@finalAlg</span>
-  <span class="k">trait</span> <span class="nc">Bar</span><span class="o">[</span><span class="kt">F</span><span class="o">[</span><span class="k">_</span><span class="o">]]</span> <span class="o">{</span>
-    <span class="k">type</span> <span class="kt">T</span>
-    <span class="k">def</span> <span class="n">a</span><span class="o">(</span><span class="n">i</span><span class="k">:</span> <span class="kt">Int</span><span class="o">)</span><span class="k">:</span> <span class="kt">F</span><span class="o">[</span><span class="kt">T</span><span class="o">]</span>
-  <span class="o">}</span>
-  <span class="k">implicit</span> <span class="k">val</span> <span class="n">tryInt</span> <span class="k">=</span> <span class="k">new</span> <span class="nc">Bar</span><span class="o">[</span><span class="kt">Try</span><span class="o">]</span> <span class="o">{</span>
-     <span class="k">type</span> <span class="kt">T</span> <span class="o">=</span> <span class="nc">String</span>
-     <span class="k">def</span> <span class="n">a</span><span class="o">(</span><span class="n">i</span><span class="k">:</span> <span class="kt">Int</span><span class="o">)</span><span class="k">:</span> <span class="kt">Try</span><span class="o">[</span><span class="kt">String</span><span class="o">]</span> <span class="k">=</span> <span class="nc">Try</span><span class="o">(</span><span class="n">i</span><span class="o">.</span><span class="n">toString</span><span class="o">)</span>
-  <span class="o">}</span>
+<div class="language-scala highlighter-rouge"><pre class="highlight"><code><span class="nd">@autoFunctorK</span> <span class="nd">@finalAlg</span>
+<span class="k">trait</span> <span class="nc">Bar</span><span class="o">[</span><span class="kt">F</span><span class="o">[</span><span class="k">_</span><span class="o">]]</span> <span class="o">{</span>
+  <span class="k">type</span> <span class="kt">T</span>
+  <span class="k">def</span> <span class="n">a</span><span class="o">(</span><span class="n">i</span><span class="k">:</span> <span class="kt">Int</span><span class="o">)</span><span class="k">:</span> <span class="kt">F</span><span class="o">[</span><span class="kt">T</span><span class="o">]</span>
+<span class="o">}</span>
+
+<span class="k">implicit</span> <span class="k">val</span> <span class="n">tryInt</span> <span class="k">=</span> <span class="k">new</span> <span class="nc">Bar</span><span class="o">[</span><span class="kt">Try</span><span class="o">]</span> <span class="o">{</span>
+   <span class="k">type</span> <span class="kt">T</span> <span class="o">=</span> <span class="nc">String</span>
+   <span class="k">def</span> <span class="n">a</span><span class="o">(</span><span class="n">i</span><span class="k">:</span> <span class="kt">Int</span><span class="o">)</span><span class="k">:</span> <span class="kt">Try</span><span class="o">[</span><span class="kt">String</span><span class="o">]</span> <span class="k">=</span> <span class="nc">Try</span><span class="o">(</span><span class="n">i</span><span class="o">.</span><span class="n">toString</span><span class="o">)</span>
+<span class="o">}</span>
+
+<span class="k">import</span> <span class="nn">Bar.autoDerive._</span>
 </code></pre>
 </div>
 
 <p>If you try to map this tryInt to a <code class="highlighter-rouge">Bar[Option]</code>, the <code class="highlighter-rouge">type T</code> of the <code class="highlighter-rouge">Bar[Option]</code> isn’t refined.  That is, you can do</p>
 
 <div class="language-scala highlighter-rouge"><pre class="highlight"><code><span class="nc">Bar</span><span class="o">[</span><span class="kt">Option</span><span class="o">].</span><span class="n">a</span><span class="o">(</span><span class="mi">3</span><span class="o">)</span>
-<span class="c1">// res4: Option[Bar[Option]#T] = Some(3)
+<span class="c1">// res7: Option[Bar[Option]#T] = Some(3)
 </span></code></pre>
 </div>
 <p>But you can’t create a <code class="highlighter-rouge">Bar[Option]{ type T = String }</code> from the <code class="highlighter-rouge">tryInt</code> using <code class="highlighter-rouge">FunctorK</code>.</p>
 
 <div class="language-scala highlighter-rouge"><pre class="highlight"><code><span class="n">scala</span><span class="o">&gt;</span> <span class="k">val</span> <span class="n">barOption</span><span class="k">:</span> <span class="kt">Bar</span><span class="o">[</span><span class="kt">Option</span><span class="o">]</span> <span class="o">{</span> <span class="k">type</span> <span class="kt">T</span> <span class="o">=</span> <span class="nc">String</span> <span class="o">}</span> <span class="k">=</span> <span class="n">tryInt</span><span class="o">.</span><span class="n">mapK</span><span class="o">(</span><span class="n">fk</span><span class="o">)</span>
-<span class="o">&lt;</span><span class="n">console</span><span class="k">&gt;:</span><span class="mi">22</span><span class="k">:</span> <span class="kt">error:</span> <span class="kt">value</span> <span class="kt">mapK</span> <span class="kt">is</span> <span class="kt">not</span> <span class="kt">a</span> <span class="kt">member</span> <span class="kt">of</span> <span class="kt">Bar</span><span class="o">[</span><span class="kt">scala.util.Try</span><span class="o">]{</span><span class="k">type</span> <span class="kt">T</span> <span class="o">=</span> <span class="nc">String</span><span class="o">}</span>
+<span class="o">&lt;</span><span class="n">console</span><span class="k">&gt;:</span><span class="mi">31</span><span class="k">:</span> <span class="kt">error:</span> <span class="kt">value</span> <span class="kt">mapK</span> <span class="kt">is</span> <span class="kt">not</span> <span class="kt">a</span> <span class="kt">member</span> <span class="kt">of</span> <span class="kt">Bar</span><span class="o">[</span><span class="kt">scala.util.Try</span><span class="o">]{</span><span class="k">type</span> <span class="kt">T</span> <span class="o">=</span> <span class="nc">String</span><span class="o">}</span>
        <span class="k">val</span> <span class="n">barOption</span><span class="k">:</span> <span class="kt">Bar</span><span class="o">[</span><span class="kt">Option</span><span class="o">]</span> <span class="o">{</span> <span class="k">type</span> <span class="kt">T</span> <span class="o">=</span> <span class="nc">String</span> <span class="o">}</span> <span class="k">=</span> <span class="n">tryInt</span><span class="o">.</span><span class="n">mapK</span><span class="o">(</span><span class="n">fk</span><span class="o">)</span>
                                                                <span class="o">^</span>
 </code></pre>
@@ -60,7 +65,7 @@ The <code class="highlighter-rouge">FunctorK</code> instance it generates does n
 <p>However, there is also <code class="highlighter-rouge">mapK</code> function added to the companion object of the algebra which gives you more precise type.</p>
 
 <div class="language-scala highlighter-rouge"><pre class="highlight"><code><span class="k">val</span> <span class="n">barOption</span><span class="k">:</span> <span class="kt">Bar</span><span class="o">[</span><span class="kt">Option</span><span class="o">]</span> <span class="o">{</span> <span class="k">type</span> <span class="kt">T</span> <span class="o">=</span> <span class="nc">String</span> <span class="o">}</span> <span class="k">=</span> <span class="nc">Bar</span><span class="o">.</span><span class="n">mapK</span><span class="o">(</span><span class="n">tryInt</span><span class="o">)(</span><span class="n">fk</span><span class="o">)</span>
-<span class="c1">// barOption: Bar[Option]{type T = String} = Bar$$anon$2@36291553
+<span class="c1">// barOption: Bar[Option]{type T = String} = Bar$$anon$2@c0ef8aa
 </span></code></pre>
 </div>
 
