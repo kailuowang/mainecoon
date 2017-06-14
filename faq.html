@@ -65,7 +65,70 @@ The <code class="highlighter-rouge">FunctorK</code> instance it generates does n
 <p>However, there is also <code class="highlighter-rouge">mapK</code> function added to the companion object of the algebra which gives you more precise type.</p>
 
 <div class="language-scala highlighter-rouge"><pre class="highlight"><code><span class="k">val</span> <span class="n">barOption</span><span class="k">:</span> <span class="kt">Bar</span><span class="o">[</span><span class="kt">Option</span><span class="o">]</span> <span class="o">{</span> <span class="k">type</span> <span class="kt">T</span> <span class="o">=</span> <span class="nc">String</span> <span class="o">}</span> <span class="k">=</span> <span class="nc">Bar</span><span class="o">.</span><span class="n">mapK</span><span class="o">(</span><span class="n">tryInt</span><span class="o">)(</span><span class="n">fk</span><span class="o">)</span>
-<span class="c1">// barOption: Bar[Option]{type T = String} = Bar$$anon$2@c0ef8aa
+<span class="c1">// barOption: Bar[Option]{type T = String} = Bar$$anon$3@23725d02
+</span></code></pre>
+</div>
+
+<p>Also since the <code class="highlighter-rouge">FunctorK</code> (or <code class="highlighter-rouge">InvariantK</code>) instance uses a dependent type on the original interpreter, you may run into dependent type related issues. In those cases, this <code class="highlighter-rouge">mapK</code> (or <code class="highlighter-rouge">imapK</code>) on the companion object may give better result.
+Here are two examples.</p>
+
+<h4 id="cannot-resolve-implicit-defined-by-the-dependent-type">Cannot resolve implicit defined by the dependent type</h4>
+
+<div class="language-scala highlighter-rouge"><pre class="highlight"><code><span class="k">import</span> <span class="nn">cats.Show</span>
+<span class="k">import</span> <span class="nn">cats.implicits._</span>
+
+<span class="nd">@autoFunctorK</span>
+<span class="k">trait</span> <span class="nc">Algebra</span><span class="o">[</span><span class="kt">F</span><span class="o">[</span><span class="k">_</span><span class="o">]]</span> <span class="o">{</span>
+  <span class="k">type</span> <span class="kt">TC</span><span class="o">[</span><span class="kt">T</span><span class="o">]</span>
+  <span class="k">def</span> <span class="n">a</span><span class="o">[</span><span class="kt">T:</span> <span class="kt">TC</span><span class="o">](</span><span class="n">t</span><span class="k">:</span> <span class="kt">T</span><span class="o">)</span><span class="k">:</span> <span class="kt">F</span><span class="o">[</span><span class="kt">String</span><span class="o">]</span>
+<span class="o">}</span>
+
+<span class="k">object</span> <span class="nc">tryInt</span> <span class="k">extends</span> <span class="nc">Algebra</span><span class="o">[</span><span class="kt">Try</span><span class="o">]</span> <span class="o">{</span>
+  <span class="k">type</span> <span class="kt">TC</span><span class="o">[</span><span class="kt">T</span><span class="o">]</span> <span class="k">=</span> <span class="nc">Show</span><span class="o">[</span><span class="kt">T</span><span class="o">]</span>
+  <span class="k">def</span> <span class="n">a</span><span class="o">[</span><span class="kt">T:</span> <span class="kt">TC</span><span class="o">](</span><span class="n">t</span><span class="k">:</span> <span class="kt">T</span><span class="o">)</span><span class="k">:</span> <span class="kt">Try</span><span class="o">[</span><span class="kt">String</span><span class="o">]</span> <span class="k">=</span> <span class="nc">Try</span><span class="o">(</span><span class="n">t</span><span class="o">.</span><span class="n">show</span><span class="o">)</span>
+<span class="o">}</span>
+</code></pre>
+</div>
+<p><code class="highlighter-rouge">FunctorK.mapK</code> will result in unusable interpreter due to scalac’s difficulty in resolving implicit based on dependent type.</p>
+<div class="language-scala highlighter-rouge"><pre class="highlight"><code><span class="n">scala</span><span class="o">&gt;</span> <span class="nc">FunctorK</span><span class="o">[</span><span class="kt">Algebra</span><span class="o">].</span><span class="n">mapK</span><span class="o">(</span><span class="n">tryInt</span><span class="o">)(</span><span class="n">fk</span><span class="o">).</span><span class="n">a</span><span class="o">(</span><span class="nc">List</span><span class="o">(</span><span class="mi">1</span><span class="o">,</span><span class="mi">2</span><span class="o">,</span><span class="mi">3</span><span class="o">))</span>
+<span class="o">&lt;</span><span class="n">console</span><span class="k">&gt;:</span><span class="mi">36</span><span class="k">:</span> <span class="kt">error:</span> <span class="kt">could</span> <span class="kt">not</span> <span class="kt">find</span> <span class="kt">implicit</span> <span class="kt">value</span> <span class="kt">for</span> <span class="kt">evidence</span> <span class="kt">parameter</span> <span class="kt">of</span> <span class="k">type</span> <span class="k">_</span><span class="err">1</span><span class="kt">.TC</span><span class="o">[</span><span class="kt">List</span><span class="o">[</span><span class="kt">Int</span><span class="o">]]</span>
+       <span class="nc">FunctorK</span><span class="o">[</span><span class="kt">Algebra</span><span class="o">].</span><span class="n">mapK</span><span class="o">(</span><span class="n">tryInt</span><span class="o">)(</span><span class="n">fk</span><span class="o">).</span><span class="n">a</span><span class="o">(</span><span class="nc">List</span><span class="o">(</span><span class="mi">1</span><span class="o">,</span><span class="mi">2</span><span class="o">,</span><span class="mi">3</span><span class="o">))</span>
+                                           <span class="o">^</span>
+</code></pre>
+</div>
+<p>The <code class="highlighter-rouge">mapK</code> on the companion will work fine.</p>
+<div class="language-scala highlighter-rouge"><pre class="highlight"><code><span class="nc">Algebra</span><span class="o">.</span><span class="n">mapK</span><span class="o">(</span><span class="n">tryInt</span><span class="o">)(</span><span class="n">fk</span><span class="o">).</span><span class="n">a</span><span class="o">(</span><span class="nc">List</span><span class="o">(</span><span class="mi">1</span><span class="o">,</span><span class="mi">2</span><span class="o">,</span><span class="mi">3</span><span class="o">))</span>
+<span class="c1">// res11: Option[String] = Some(List(1, 2, 3))
+</span></code></pre>
+</div>
+
+<h4 id="cannot-take-in-argument-whose-type-is-a-dependent-type">Cannot take in argument whose type is a dependent type</h4>
+<div class="language-scala highlighter-rouge"><pre class="highlight"><code><span class="nd">@autoInvariantK</span>
+<span class="k">trait</span> <span class="nc">InvAlg</span><span class="o">[</span><span class="kt">F</span><span class="o">[</span><span class="k">_</span><span class="o">]]</span> <span class="o">{</span>
+  <span class="k">type</span> <span class="kt">T</span>
+  <span class="k">def</span> <span class="n">a</span><span class="o">(</span><span class="n">i</span><span class="k">:</span> <span class="kt">F</span><span class="o">[</span><span class="kt">T</span><span class="o">])</span><span class="k">:</span> <span class="kt">F</span><span class="o">[</span><span class="kt">T</span><span class="o">]</span>
+<span class="o">}</span>
+
+<span class="k">object</span> <span class="nc">tryInt</span> <span class="k">extends</span> <span class="nc">InvAlg</span><span class="o">[</span><span class="kt">Try</span><span class="o">]</span> <span class="o">{</span>
+  <span class="k">type</span> <span class="kt">T</span> <span class="o">=</span> <span class="nc">String</span>
+  <span class="k">def</span> <span class="n">a</span><span class="o">(</span><span class="n">i</span><span class="k">:</span> <span class="kt">Try</span><span class="o">[</span><span class="kt">String</span><span class="o">])</span><span class="k">:</span> <span class="kt">Try</span><span class="o">[</span><span class="kt">String</span><span class="o">]</span> <span class="k">=</span> <span class="n">i</span><span class="o">.</span><span class="n">map</span><span class="o">(</span><span class="k">_</span> <span class="o">+</span> <span class="s">"a"</span><span class="o">)</span>
+<span class="o">}</span>
+<span class="k">implicit</span> <span class="k">val</span> <span class="n">rk</span><span class="k">:</span> <span class="kt">Option</span> <span class="kt">~&gt;</span> <span class="kt">Try</span> <span class="o">=</span> <span class="n">λ</span><span class="o">[</span><span class="kt">Option</span> <span class="kt">~&gt;</span> <span class="kt">Try</span><span class="o">](</span><span class="n">o</span> <span class="k">=&gt;</span> <span class="nc">Try</span><span class="o">(</span><span class="n">o</span><span class="o">.</span><span class="n">get</span><span class="o">))</span>
+
+</code></pre>
+</div>
+<p><code class="highlighter-rouge">InvariantK.imapK</code> will result in unusable interpreter because method <code class="highlighter-rouge">a</code>’s argument type is a dependent type on original interpreter.</p>
+<div class="language-scala highlighter-rouge"><pre class="highlight"><code>     <span class="o">|</span> <span class="nc">InvariantK</span><span class="o">[</span><span class="kt">InvAlg</span><span class="o">].</span><span class="n">imapK</span><span class="o">(</span><span class="n">tryInt</span><span class="o">)(</span><span class="n">fk</span><span class="o">)(</span><span class="n">rk</span><span class="o">).</span><span class="n">a</span><span class="o">(</span><span class="nc">Some</span><span class="o">(</span><span class="s">"4"</span><span class="o">))</span>
+<span class="o">&lt;</span><span class="n">console</span><span class="k">&gt;:</span><span class="mi">38</span><span class="k">:</span> <span class="kt">error:</span> <span class="k">type</span> <span class="kt">mismatch</span><span class="o">;</span>
+ <span class="n">found</span>   <span class="k">:</span> <span class="kt">String</span><span class="o">(</span><span class="err">"4"</span><span class="o">)</span>
+ <span class="kt">required:</span> <span class="k">_</span><span class="err">1</span><span class="kt">.T</span> <span class="kt">where</span> <span class="kt">val</span> <span class="k">_</span><span class="err">1</span><span class="kt">:</span> <span class="kt">InvAlg</span><span class="o">[</span><span class="kt">Option</span><span class="o">]</span>
+       <span class="nc">InvariantK</span><span class="o">[</span><span class="kt">InvAlg</span><span class="o">].</span><span class="n">imapK</span><span class="o">(</span><span class="n">tryInt</span><span class="o">)(</span><span class="n">fk</span><span class="o">)(</span><span class="n">rk</span><span class="o">).</span><span class="n">a</span><span class="o">(</span><span class="nc">Some</span><span class="o">(</span><span class="s">"4"</span><span class="o">))</span>
+                                                       <span class="o">^</span>
+</code></pre>
+</div>
+<p>The <code class="highlighter-rouge">imapK</code> on the companion will work fine</p>
+<div class="language-scala highlighter-rouge"><pre class="highlight"><code><span class="nc">InvAlg</span><span class="o">.</span><span class="n">imapK</span><span class="o">(</span><span class="n">tryInt</span><span class="o">)(</span><span class="n">fk</span><span class="o">)(</span><span class="n">rk</span><span class="o">).</span><span class="n">a</span><span class="o">(</span><span class="nc">Some</span><span class="o">(</span><span class="s">"4"</span><span class="o">))</span>
+<span class="c1">// res15: Option[String] = Some(4a)
 </span></code></pre>
 </div>
 
