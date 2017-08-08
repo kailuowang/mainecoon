@@ -17,7 +17,7 @@
 <p>For tagless final algebras whose effect <code class="highlighter-rouge">F</code> appears in both the covariant positions and contravariant positions, instance of <code class="highlighter-rouge">InvariantK</code> can be auto generated through the <code class="highlighter-rouge">autoInvariantK</code> annotation.</p>
 
 <h3 id="a-idcartesiank-hrefcartesiankacartesiank"><a id="cartesianK" href="#cartesianK"></a><code class="highlighter-rouge">CartesianK</code></h3>
-<div class="highlighter-rouge"><pre class="highlight"><code> def productK[F[_], G[_]](af: A[F], ag: A[G]): A[Prod[F, G, ?]]
+<div class="highlighter-rouge"><pre class="highlight"><code> def productK[F[_], G[_]](af: A[F], ag: A[G]): A[Tuple2K[F, G, ?]]
 </code></pre>
 </div>
 
