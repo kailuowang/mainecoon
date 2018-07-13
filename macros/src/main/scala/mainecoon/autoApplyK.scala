@@ -23,9 +23,9 @@ import Util._
 import collection.immutable.Seq
 
 /**
- * auto generates an instance of [[FunctorK]]
+ * auto generates an instance of [[ApplyK]]
  */
-@compileTimeOnly("Cannot expand @autoFunctorK")
+@compileTimeOnly("Cannot expand @autoApplyK")
 class autoApplyK(autoDerivation: Boolean) extends StaticAnnotation {
   inline def apply(defn: Any): Any = meta {
     val autoDerivation: Boolean = this match {
