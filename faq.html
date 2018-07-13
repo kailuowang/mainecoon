@@ -23,7 +23,7 @@
 </code></pre>
 </div>
 <div class="language-scala highlighter-rouge"><pre class="highlight"><code><span class="nc">Foo</span><span class="o">[</span><span class="kt">Option</span>, <span class="kt">String</span><span class="o">].</span><span class="n">a</span><span class="o">(</span><span class="mi">3</span><span class="o">)</span>
-<span class="c1">// res4: Option[String] = Some(3)
+<span class="c1">// res0: Option[String] = Some(3)
 </span></code></pre>
 </div>
 
@@ -50,7 +50,7 @@ The <code class="highlighter-rouge">FunctorK</code> instance it generates does n
 <p>If you try to map this tryInt to a <code class="highlighter-rouge">Bar[Option]</code>, the <code class="highlighter-rouge">type T</code> of the <code class="highlighter-rouge">Bar[Option]</code> isn’t refined.  That is, you can do</p>
 
 <div class="language-scala highlighter-rouge"><pre class="highlight"><code><span class="nc">Bar</span><span class="o">[</span><span class="kt">Option</span><span class="o">].</span><span class="n">a</span><span class="o">(</span><span class="mi">3</span><span class="o">)</span>
-<span class="c1">// res7: Option[Bar[Option]#T] = Some(3)
+<span class="c1">// res1: Option[Bar[Option]#T] = Some(3)
 </span></code></pre>
 </div>
 <p>But you can’t create a <code class="highlighter-rouge">Bar[Option]{ type T = String }</code> from the <code class="highlighter-rouge">tryInt</code> using <code class="highlighter-rouge">FunctorK</code>.</p>
@@ -65,7 +65,7 @@ The <code class="highlighter-rouge">FunctorK</code> instance it generates does n
 <p>However, there is also <code class="highlighter-rouge">mapK</code> function added to the companion object of the algebra which gives you more precise type.</p>
 
 <div class="language-scala highlighter-rouge"><pre class="highlight"><code><span class="k">val</span> <span class="n">barOption</span><span class="k">:</span> <span class="kt">Bar</span><span class="o">[</span><span class="kt">Option</span><span class="o">]</span> <span class="o">{</span> <span class="k">type</span> <span class="kt">T</span> <span class="o">=</span> <span class="nc">String</span> <span class="o">}</span> <span class="k">=</span> <span class="nc">Bar</span><span class="o">.</span><span class="n">mapK</span><span class="o">(</span><span class="n">tryInt</span><span class="o">)(</span><span class="n">fk</span><span class="o">)</span>
-<span class="c1">// barOption: Bar[Option]{type T = String} = Bar$$anon$3@ef9add8
+<span class="c1">// barOption: Bar[Option]{type T = String} = Bar$$anon$3@1b1d398c
 </span></code></pre>
 </div>
 
@@ -98,7 +98,7 @@ Here are two examples.</p>
 </div>
 <p>The <code class="highlighter-rouge">mapK</code> on the companion will work fine.</p>
 <div class="language-scala highlighter-rouge"><pre class="highlight"><code><span class="nc">Algebra</span><span class="o">.</span><span class="n">mapK</span><span class="o">(</span><span class="n">tryInt</span><span class="o">)(</span><span class="n">fk</span><span class="o">).</span><span class="n">a</span><span class="o">(</span><span class="nc">List</span><span class="o">(</span><span class="mi">1</span><span class="o">,</span><span class="mi">2</span><span class="o">,</span><span class="mi">3</span><span class="o">))</span>
-<span class="c1">// res11: Option[String] = Some(List(1, 2, 3))
+<span class="c1">// res3: Option[String] = Some(List(1, 2, 3))
 </span></code></pre>
 </div>
 
@@ -118,8 +118,8 @@ Here are two examples.</p>
 </code></pre>
 </div>
 <p><code class="highlighter-rouge">InvariantK.imapK</code> will result in unusable interpreter because method <code class="highlighter-rouge">a</code>’s argument type is a dependent type on original interpreter.</p>
-<div class="language-scala highlighter-rouge"><pre class="highlight"><code>     <span class="o">|</span> <span class="nc">InvariantK</span><span class="o">[</span><span class="kt">InvAlg</span><span class="o">].</span><span class="n">imapK</span><span class="o">(</span><span class="n">tryInt</span><span class="o">)(</span><span class="n">fk</span><span class="o">)(</span><span class="n">rk</span><span class="o">).</span><span class="n">a</span><span class="o">(</span><span class="nc">Some</span><span class="o">(</span><span class="s">"4"</span><span class="o">))</span>
-<span class="o">&lt;</span><span class="n">console</span><span class="k">&gt;:</span><span class="mi">38</span><span class="k">:</span> <span class="kt">error:</span> <span class="k">type</span> <span class="kt">mismatch</span><span class="o">;</span>
+<div class="language-scala highlighter-rouge"><pre class="highlight"><code><span class="n">scala</span><span class="o">&gt;</span> <span class="nc">InvariantK</span><span class="o">[</span><span class="kt">InvAlg</span><span class="o">].</span><span class="n">imapK</span><span class="o">(</span><span class="n">tryInt</span><span class="o">)(</span><span class="n">fk</span><span class="o">)(</span><span class="n">rk</span><span class="o">).</span><span class="n">a</span><span class="o">(</span><span class="nc">Some</span><span class="o">(</span><span class="s">"4"</span><span class="o">))</span>
+<span class="o">&lt;</span><span class="n">console</span><span class="k">&gt;:</span><span class="mi">37</span><span class="k">:</span> <span class="kt">error:</span> <span class="k">type</span> <span class="kt">mismatch</span><span class="o">;</span>
  <span class="n">found</span>   <span class="k">:</span> <span class="kt">String</span><span class="o">(</span><span class="err">"4"</span><span class="o">)</span>
  <span class="kt">required:</span> <span class="k">_</span><span class="err">1</span><span class="kt">.T</span> <span class="kt">where</span> <span class="kt">val</span> <span class="k">_</span><span class="err">1</span><span class="kt">:</span> <span class="kt">InvAlg</span><span class="o">[</span><span class="kt">Option</span><span class="o">]</span>
        <span class="nc">InvariantK</span><span class="o">[</span><span class="kt">InvAlg</span><span class="o">].</span><span class="n">imapK</span><span class="o">(</span><span class="n">tryInt</span><span class="o">)(</span><span class="n">fk</span><span class="o">)(</span><span class="n">rk</span><span class="o">).</span><span class="n">a</span><span class="o">(</span><span class="nc">Some</span><span class="o">(</span><span class="s">"4"</span><span class="o">))</span>
@@ -128,7 +128,7 @@ Here are two examples.</p>
 </div>
 <p>The <code class="highlighter-rouge">imapK</code> on the companion will work fine</p>
 <div class="language-scala highlighter-rouge"><pre class="highlight"><code><span class="nc">InvAlg</span><span class="o">.</span><span class="n">imapK</span><span class="o">(</span><span class="n">tryInt</span><span class="o">)(</span><span class="n">fk</span><span class="o">)(</span><span class="n">rk</span><span class="o">).</span><span class="n">a</span><span class="o">(</span><span class="nc">Some</span><span class="o">(</span><span class="s">"4"</span><span class="o">))</span>
-<span class="c1">// res15: Option[String] = Some(4a)
+<span class="c1">// res5: Option[String] = Some(4a)
 </span></code></pre>
 </div>
 
