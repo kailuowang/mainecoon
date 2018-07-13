@@ -94,26 +94,28 @@ class CovariantKInstanceGenerator(algDefn: AlgDefn, autoDerivation: Boolean) ext
     )
   }
 
-  lazy val autoDerivationDef: Seq[Defn] = if(autoDerivation)
-      Seq(q"""
-           object autoDerive {
-             @SuppressWarnings(Array("org.wartremover.warts.ImplicitParameter"))
-             implicit def fromFunctorK[${effectType}, G[_], ..${extraTParams}](
-               implicit fk: _root_.cats.~>[${effectTypeArg}, G],
-               FK: _root_.mainecoon.FunctorK[$typeLambdaVaryingHigherKindedEffect],
-               af: ${newTypeSig("F")})
-               : ${newTypeSig("G")} = FK.mapK(af)(fk)
-           }
-          """)
-    else Nil
 
-  lazy val newDef: TypeDefinition = cls.copy(companion = cls.companion.addStats(instanceDef ++ autoDerivationDef ++ instanceDefFullyRefined))
+  lazy val newDef: TypeDefinition = cls.copy(companion = cls.companion.addStats(instanceDef ++ {
+    if(autoDerivation)
+      Seq(autoDerivationDef)
+    else Nil} ++ instanceDefFullyRefined))
 }
 
 
 class CovariantKMethodsGenerator(algDefn: AlgDefn) extends FunctorKInstanceGenerator(algDefn) {
   import algDefn._
   import cls._
+
+  def autoDerivationDef: Defn =
+    q"""
+      object autoDerive {
+        @SuppressWarnings(Array("org.wartremover.warts.ImplicitParameter"))
+        implicit def fromFunctorK[${effectType}, G[_], ..${extraTParams}](
+          implicit fk: _root_.cats.~>[${effectTypeArg}, G],
+          FK: _root_.mainecoon.FunctorK[$typeLambdaVaryingHigherKindedEffect],
+          af: ${newTypeSig("F")})
+          : ${newTypeSig("G")} = FK.mapK(af)(fk)
+      }"""
 
   def covariantKMethods(from: Term.Name): Seq[Stat] =
     fromExistingStats {
